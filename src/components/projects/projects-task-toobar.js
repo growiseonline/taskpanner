@@ -98,7 +98,7 @@ export const ProjectsTaskToolbar = (props) => {
         sx={{ m: 1 }}
         variant="h4"
       >
-      Projetos
+      Atividades Planejadas
       </Typography>
       <Box sx={{ m: 1 }}>
 
@@ -135,7 +135,7 @@ export const ProjectsTaskToolbar = (props) => {
                   </InputAdornment>
                 )
               }}
-              placeholder="Search projects"
+              placeholder="Search tasks"
               variant="outlined"
             />
           </Box>

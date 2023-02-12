@@ -8,9 +8,17 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import * as React from 'react';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormHelperText from '@mui/material/FormHelperText';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 import { format } from 'date-fns';
 import EditIcon from '@mui/icons-material/Edit';
 import AddTaskIcon from '@mui/icons-material/AddTask';
+import { SeverityPill } from '../severity-pill';
 import {
   Avatar,
   Box,
@@ -22,18 +30,51 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Typography
+  Typography,
+ Grid,
+  CardContent,
 
 } from '@mui/material';
 import Link from '@mui/material/Link';
 import { getInitials } from '../../utils/get-initials';
 import { id } from 'date-fns/locale';
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+  const names = [
+    'Augusto Morais',
+    'Julio Abrahão',
+    'Ramon Oliveira',
+    'Lucas Oliveira',
+    'Guilherme Rodrigues',
+    'Carlos Eduardo',
+    'Bárbara Barbosa',
+    'Lucas Fiorine',
+  ];
 
-export const ProjectsListResults = ({ projects, ...rest }) => {
+export const ProjectsListActivePlanResults = ({ projects, ...rest }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
+  const [open, setOpen] = React.useState(false);
 
+  const [age, setAge] = React.useState('');
+  const [scope, setScope] = React.useState('');
+
+  const [personName, setPersonName] = React.useState([]);
+  const handleChangeScope = (event) => {
+    setScope(event.target.value);
+  };
+  const handleChange = (event) => {
+    setAge(event.target.value);
+  };
 
   const handleSelectAll = (event) => {
     let newSelectedCustomerIds;
@@ -74,6 +115,13 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   return (
     <Card {...rest}>
@@ -94,10 +142,10 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                   />
                 </TableCell>
                 <TableCell>
-                  Name
+                  Tarefa
                 </TableCell>
                 <TableCell>
-                  Cliente
+                  Executor
                 </TableCell>
                 <TableCell>
                   Hora Homem Planejada
@@ -106,13 +154,16 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                  Hora Homem Executada
                 </TableCell>
                 <TableCell>
-                  Início de Execução
+                  Status
                 </TableCell>
                 <TableCell>
-                  Data de Criação
+                  Data Agendada
                 </TableCell>
                 <TableCell>
-                  Time
+                  Observação do Planejador
+                </TableCell>
+                <TableCell>
+                  Observação do Executor
                 </TableCell>
                 <TableCell>
 
@@ -145,7 +196,7 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                           color="textPrimary"
                           variant="body1"
                         >
-                          {projetc.Name}
+                          {projetc.taskName}
                         </Typography>
                       </Box>
                     </TableCell>
@@ -154,7 +205,7 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                         color="textPrimary"
                         variant="body1"
                       >
-                        {projetc.client}
+                        {projetc.executor}
                       </Typography>
                     </TableCell>
                     <TableCell>
@@ -162,7 +213,7 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                         color="textPrimary"
                         variant="body1"
                       >
-                        {projetc.PlannedManHour}
+                        {projetc.horaPalanejada}
                       </Typography>
                     </TableCell>
                     <TableCell>
@@ -170,7 +221,25 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                         color="textPrimary"
                         variant="body1"
                       >
-                        {projetc.ExecutedManHour}
+                        {projetc.horaExecutada}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                    <SeverityPill
+                    color={(projetc.status === 'Concluída' && 'success')
+                    || (projetc.status === 'Bloqueada' && 'error')
+                    || (projetc.status === 'Não Iniciada' && 'info')
+                    || 'warning'}
+                  >
+                    {projetc.status}
+                  </SeverityPill>
+                    </TableCell>
+                    <TableCell>
+                      <Typography
+                        color="textPrimary"
+                        variant="body1"
+                      >
+                        {projetc.daataAgendada}
                       </Typography>
                     </TableCell>
                     <TableCell>
@@ -178,28 +247,19 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                         color="textPrimary"
                         variant="body1"
                       >
-                        {projetc.StartDate}
+                        {projetc.notesFromPalanner}
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography
+                    <Typography
                         color="textPrimary"
                         variant="body1"
                       >
-                        {projetc.StartDate}
+                        {projetc.notesFromExecutor}
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography
-                        color="textPrimary"
-                        variant="body1"
-                      >
-                        {projetc.PMTeamID}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                    <Link href={`/projects/ + ${projetc.id}`}><AddTaskIcon /></Link>
-
+                    <EditIcon onClick={handleClickOpen}/>
                     </TableCell>
 
                   </TableRow>
@@ -208,12 +268,106 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
             </TableBody>
           </Table>
         </Box>
+        <Dialog open={open}
+onClose={handleClose}>
+        <DialogTitle>Atualizar Tarefa</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+          </DialogContentText>
+          <CardContent>
+          <Grid
+            container
+            spacing={3}
+          >
+            <Grid
+              item
+              md={6}
+              xs={12}
+            >
+              <TextField
+                fullWidth
+                label="Hora Executada"
+                name="menHour"
+
+                required
+                type="number"
+
+                variant="outlined"
+              />
+            </Grid>
+            <Grid
+              item
+              md={6}
+              xs={12}
+            >
+                 <FormControl required
+                         variant="outlined"
+sx={{ minWidth:240, maxWidth:240}}>
+
+        <InputLabel id="demo-simple-select-required-label">Status</InputLabel>
+        <Select
+          labelId="demo-simple-select-required-label"
+          id="demo-simple-select-required"
+          value={scope}
+          label="Scope"
+          onChange={handleChangeScope}
+          MenuProps={MenuProps}
+        >
+
+          <MenuItem value={10}><SeverityPill color={'success'}>Concluída</SeverityPill></MenuItem>
+          <MenuItem value={20}><SeverityPill color={'error'}>Bloqueada</SeverityPill></MenuItem>
+          <MenuItem value={30}><SeverityPill color={'warning'}>Em progresso</SeverityPill></MenuItem>
+          <MenuItem value={30}><SeverityPill color={'info'}>Não Iniciada</SeverityPill></MenuItem>
 
 
+        </Select>
+        <FormHelperText>Required</FormHelperText>
+      </FormControl>
+            </Grid>
+            <Grid
+              item
+              md={6}
+              xs={12}
+            >
+            <DesktopDatePicker
+          label="Data de Execução"
+          inputFormat="MM/dd/yyyy"
+          renderInput={(params) => <TextField {...params} />}
+           />
+            </Grid>
+            <Grid
+              item
+              md={6}
+              xs={12}
+            >
+
+            </Grid>
+            <Grid
+              item
+              md={12}
+              xs={12}
+
+            >
+              <TextField
+
+                fullWidth
+                label="Observação"
+                name="codeInter"
+                variant="outlined"
+              />
+            </Grid>
 
 
-
-
+          </Grid>
+        </CardContent>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="outlined"
+                  onClick={handleClose}>Cancelar</Button>
+          <Button variant="contained"
+                  onClick={handleClose}>Cadastrar</Button>
+        </DialogActions>
+      </Dialog>
       </PerfectScrollbar>
       <TablePagination
         component="div"
@@ -229,11 +383,9 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
     </Card>
 
 
-
-
   );
 };
 
-ProjectsListResults.propTypes = {
+ProjectsListActivePlanResults.propTypes = {
   projects: PropTypes.array.isRequired
 };
