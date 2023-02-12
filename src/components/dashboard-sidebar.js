@@ -27,11 +27,7 @@ const items = [
     icon: (<ChartBarIcon fontSize="small" />),
     title: 'Dashboard'
   },
-  {
-    href: '/customers',
-    icon: (<WorkspacesIcon fontSize="small" />),
-    title: 'Workspaces'
-  },
+
   {
     href: '/users',
     icon: (<UsersIcon fontSize="small" />),
@@ -72,11 +68,7 @@ const items = [
     icon: (<CogIcon fontSize="small" />),
     title: 'Settings'
   },
-  {
-    href: '/login',
-    icon: (<LockIcon fontSize="small" />),
-    title: 'Login'
-  },
+
 
 
 ];
@@ -113,7 +105,7 @@ export const DashboardSidebar = (props) => {
         }}
       >
         <div>
-          <Box sx={{ p: 3 }}>
+          <Box sx={{ p: 4 }}>
             <NextLink
               href="/"
               passHref
