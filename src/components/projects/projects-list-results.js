@@ -97,7 +97,7 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                   Name
                 </TableCell>
                 <TableCell>
-                  Client
+                  Cliente
                 </TableCell>
                 <TableCell>
                   Hora Homem Planejada
