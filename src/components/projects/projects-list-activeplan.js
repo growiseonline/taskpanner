@@ -19,6 +19,7 @@ import { format } from 'date-fns';
 import EditIcon from '@mui/icons-material/Edit';
 import AddTaskIcon from '@mui/icons-material/AddTask';
 import { SeverityPill } from '../severity-pill';
+import ManageHistoryIcon from '@mui/icons-material/ManageHistory';
 import {
   Avatar,
   Box,
@@ -259,7 +260,7 @@ export const ProjectsListActivePlanResults = ({ projects, ...rest }) => {
                       </Typography>
                     </TableCell>
                     <TableCell>
-                    <EditIcon onClick={handleClickOpen}/>
+                    <ManageHistoryIcon onClick={handleClickOpen}/>
                     </TableCell>
 
                   </TableRow>
