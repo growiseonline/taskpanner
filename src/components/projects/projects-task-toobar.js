@@ -26,6 +26,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Checkbox from '@mui/material/Checkbox';
+import { TextareaAutosize } from '@mui/base';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -48,10 +49,11 @@ const MenuProps = {
     'Lucas Fiorine',
   ];
 
-export const ProjectsListToolbar = (props) => {
+export const ProjectsTaskToolbar = (props) => {
   const [open, setOpen] = React.useState(false);
 
   const [age, setAge] = React.useState('');
+  const [scope, setScope] = React.useState('');
 
   const [personName, setPersonName] = React.useState([]);
 
@@ -68,7 +70,9 @@ export const ProjectsListToolbar = (props) => {
   const handleChange = (event) => {
     setAge(event.target.value);
   };
-
+  const handleChangeScope = (event) => {
+    setScope(event.target.value);
+  };
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -107,9 +111,9 @@ export const ProjectsListToolbar = (props) => {
 
         <Button onClick={handleClickOpen}
           color="primary"
-          variant="contained"
+          variant="outlined"
         >
-          Adicionar Projeto
+          Atribuir nova Tarefa
         </Button>
       </Box>
     </Box>
@@ -140,7 +144,7 @@ export const ProjectsListToolbar = (props) => {
     </Box>
     <Dialog open={open}
 onClose={handleClose}>
-        <DialogTitle>Novo Projeto</DialogTitle>
+        <DialogTitle>Nova Tarefa</DialogTitle>
         <DialogContent>
           <DialogContentText>
           </DialogContentText>
@@ -154,16 +158,30 @@ onClose={handleClose}>
               md={6}
               xs={12}
             >
-              <TextField
-                fullWidth
-                helperText="Insira o nome do projeto"
-                label="Nome do Projeto"
-                name="nameProjetc"
+                 <FormControl required
+                         variant="outlined"
+sx={{ minWidth:240, maxWidth:240}}>
 
-                required
+        <InputLabel id="demo-simple-select-required-label">Tarefa</InputLabel>
+        <Select
+          labelId="demo-simple-select-required-label"
+          id="demo-simple-select-required"
+          value={scope}
+          label="Scope"
+          onChange={handleChangeScope}
+          MenuProps={MenuProps}
+        >
+          <MenuItem value="">
+            <em>None</em>
+          </MenuItem>
+          <MenuItem value={10}>Calibrar Medidor</MenuItem>
+          <MenuItem value={20}>Implantação PME</MenuItem>
+          <MenuItem value={30}>Criação de Dashboards</MenuItem>
+          <MenuItem value={10}>Treinamento PME</MenuItem>
 
-                variant="outlined"
-              />
+        </Select>
+        <FormHelperText>Required</FormHelperText>
+      </FormControl>
             </Grid>
             <Grid
               item
@@ -174,24 +192,24 @@ onClose={handleClose}>
                          variant="outlined"
 sx={{ minWidth:240, maxWidth:240}}>
 
-        <InputLabel id="demo-simple-select-required-label">Cliente</InputLabel>
+        <InputLabel id="demo-simple-select-required-label">Executor</InputLabel>
         <Select
           labelId="demo-simple-select-required-label"
           id="demo-simple-select-required"
           value={age}
-          label="Cliente"
+          label="Executor"
           onChange={handleChange}
           MenuProps={MenuProps}
         >
           <MenuItem value="">
             <em>None</em>
           </MenuItem>
-          <MenuItem value={10}>VALE</MenuItem>
-          <MenuItem value={20}>CEMIG</MenuItem>
-          <MenuItem value={30}>ANGLO GOLD</MenuItem>
-          <MenuItem value={10}>HONDA</MenuItem>
-          <MenuItem value={20}>COLGATE</MenuItem>
-          <MenuItem value={30}>AMAZON</MenuItem>
+          <MenuItem value={10}>Augusto Morais</MenuItem>
+          <MenuItem value={20}>Ramon Oliveira</MenuItem>
+          <MenuItem value={30}>Allysson Rocha</MenuItem>
+          <MenuItem value={10}>Guilherme Rodrigues</MenuItem>
+          <MenuItem value={20}>Julio Abrahão</MenuItem>
+          <MenuItem value={30}>Lucas Fiorini</MenuItem>
         </Select>
         <FormHelperText>Required</FormHelperText>
       </FormControl>
@@ -212,18 +230,6 @@ sx={{ minWidth:240, maxWidth:240}}>
                 variant="outlined"
               />
             </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Código"
-                name="codeInter"
-                variant="outlined"
-              />
-            </Grid>
 
             <Grid
               item
@@ -231,7 +237,7 @@ sx={{ minWidth:240, maxWidth:240}}>
               xs={12}
             >
             <DesktopDatePicker
-          label="Data do Contrato"
+          label="Data Agendada"
           inputFormat="MM/dd/yyyy"
           renderInput={(params) => <TextField {...params} />}
            />
@@ -241,40 +247,24 @@ sx={{ minWidth:240, maxWidth:240}}>
               md={6}
               xs={12}
             >
-            <DesktopDatePicker
-          label="Data Início de Execução"
-          inputFormat="MM/dd/yyyy"
-          renderInput={(params) => <TextField {...params} />}
-           />
+
             </Grid>
             <Grid
               item
-              md={6}
+              md={12}
               xs={12}
+
             >
-              <FormControl sx={{ minWidth:240, maxWidth:240}}>
-        <InputLabel id="demo-multiple-checkbox-label">Gestores do Projeto</InputLabel>
-        <Select
-          labelId="demo-multiple-checkbox-label"
-          id="demo-multiple-checkbox"
-          multiple
-          label="Gestor do Projeto"
-          value={personName}
-          onChange={handleChangeUser}
-          input={<OutlinedInput label="Gestor do Projeto" />}
-          renderValue={(selected) => selected.join(', ')}
-          MenuProps={MenuProps}
-        >
-          {names.map((name) => (
-            <MenuItem key={name}
-       value={name}>
-              <Checkbox checked={personName.indexOf(name) > -1} />
-              <ListItemText primary={name} />
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+              <TextField
+
+                fullWidth
+                label="Observação"
+                name="codeInter"
+                variant="outlined"
+              />
             </Grid>
+
+
           </Grid>
         </CardContent>
         </DialogContent>

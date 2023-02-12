@@ -2,7 +2,7 @@ import Head from 'next/head';
 import { Box, Container } from '@mui/material';
 import { CustomerListResults } from '../../components/customer/customer-list-results';
 import {ProjectsListResults} from '../../components/projects/projects-list-results'
-import { ProjectsListToolbar } from '../../components/projects/projects-list-toolbar';
+import { ProjectsTaskToolbar} from '../../components/projects/projects-task-toobar';
 import { CustomerListToolbar } from '../../components/customer/customer-list-toolbar';
 import { DashboardLayout } from '../../components/dashboard-layout';
 import { projects } from '../../__mocks__/projects';
@@ -23,7 +23,7 @@ const Page = () => (
       }}
     >
       <Container maxWidth={false}>
-        <ProjectsListToolbar />
+        <ProjectsTaskToolbar />
         <Box sx={{ mt: 3 }}>
 
         </Box>
