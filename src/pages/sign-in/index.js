@@ -7,13 +7,13 @@ import { Box, Button, FormHelperText, Grid, Tab, Tabs, TextField, Typography } f
 import { auth, ENABLE_AUTH } from '../../lib/auth';
 import { Logo } from '../../components/logo';
 import { useAuthContext } from '../../contexts/auth-context';
-import { useAuthContext1 } from '../../contexts/AuthContext';
+
 import Router from 'next/router';
 
 const Page = () => {
   const [tab, setTab] = useState('email');
   const [emailSent, setEmailSent] = useState(false);
-  const authContext = useAuthContext1();
+  const authContext = useAuthContext();
   const formik = useFormik({
     initialValues: {
       email: '',
