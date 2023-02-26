@@ -22,52 +22,52 @@ import TaskIcon from '@mui/icons-material/Task';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 
 const items = [
-  {
+/*  {
     href: '/',
     icon: (<ChartBarIcon fontSize="small" />),
     title: 'Dashboard'
-  },
+  },*/
 
   {
     href: '/users',
     icon: (<UsersIcon fontSize="small" />),
     title: 'Usuários'
   },
-  {
+  /* {
     href: '/customers',
     icon: (<FormatListBulletedIcon fontSize="small" />),
     title: 'Clientes'
-  },
-  {
+  },*/
+/*  {
     href: '/customers',
     icon: (<GroupWorkIcon fontSize="small" />),
     title: 'Departamentos'
-  },
-  {
+  },*/
+/*   {
     href: '/customers',
     icon: (<UsersIcon fontSize="small" />),
     title: 'Times'
-  },
+  },*/
   {
     href: '/projects',
     icon: (<AssignmentIcon fontSize="small" />),
     title: 'Projetos'
   },
   {
-    href: '/',
+    href: '/projects/id',
     icon: (<TaskIcon fontSize="small" />),
     title: 'Tarefas'
   },
-  {
+  /* {
     href: '/account',
     icon: (<UserIcon fontSize="small" />),
     title: 'Account'
-  },
-  {
+  },*/
+  /*{
     href: '/settings',
     icon: (<CogIcon fontSize="small" />),
     title: 'Settings'
-  },
+  },*/
 
 
 
@@ -83,6 +83,7 @@ export const DashboardSidebar = (props) => {
 
   useEffect(
     () => {
+
       if (!router.isReady) {
         return;
       }

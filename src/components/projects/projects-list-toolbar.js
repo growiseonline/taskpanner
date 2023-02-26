@@ -11,7 +11,7 @@ import {
 import { Search as SearchIcon } from '../../icons/search';
 import { Upload as UploadIcon } from '../../icons/upload';
 import { Download as DownloadIcon } from '../../icons/download';
-import * as React from 'react';
+
 import ListItemText from '@mui/material/ListItemText';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -26,6 +26,9 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Checkbox from '@mui/material/Checkbox';
+import {api} from '../../services/api';
+import React, {useState,useEffect} from 'react';
+import { useRouter } from 'next/router';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -49,24 +52,99 @@ const MenuProps = {
   ];
 
 export const ProjectsListToolbar = (props) => {
+  const router = useRouter();
   const [open, setOpen] = React.useState(false);
+  const [projectName , setProjectName] = React.useState('')
+  const [internalCode , setInternalCode] = React.useState('')
+  const [client, setClient] = React.useState('');
+  const [plannerManager, setPM]= React.useState('');
+  const [plannerHour, setPlanerHour] = React.useState([]);
+  const [departmentName, setDepartmentName] = React.useState([]);
+  const [departmentList,setDepartments] = React.useState([]);
+  const [clientList,setClients] = React.useState([]);
+  const [pmList,setPMs] = React.useState([]);
+  const [dateContract, setDateContract] = React.useState('');
+  const [dateStart, setDateStart] = React.useState('');
 
-  const [age, setAge] = React.useState('');
 
-  const [personName, setPersonName] = React.useState([]);
+  async function handleSubmit(){
+    const data = {
+      projectName : projectName,
+      clientID : String(client),
+      plannedManHour : plannerHour,
+      dapartment : departmentName ,
+      internalCode : internalCode,
+      startDate : dateStart.getDate()+ "/" + dateStart.getMonth() + "/" + dateStart.getFullYear(),
+      contractEndDate : dateContract.getDate()+ "/" + dateContract.getMonth() + "/" + dateContract.getFullYear(),
+      PMTeamID : String(plannerManager)
+     }
+     console.log(data)
 
-  const handleChangeUser = (event) => {
+     if(projectName!==''&&projectName!==''&&plannerHour!==''&&internalCode!==''){
+      //Requisição
+      console.log(data)
+      const response = await api.post('/api/projects/v1',data);
+
+      if(response.status===200){
+        router
+        .replace({
+          pathname: '/projects',
+          //  query: router.asPath !== '/' ? { continueUrl: router.asPath } : undefined
+        })
+        window.location.href='/projects'
+
+      }else{
+        alert('Erro ao cadastrar o usuário!');
+      }
+    }else{
+      alert('Por favor, preencha todos os dados!');
+    }
+  }
+
+
+
+  const handleChangeDepartment = (event) => {
     const {
       target: { value },
     } = event;
-    setPersonName(
+    setDepartmentName(
       // On autofill we get a stringified value.
       typeof value === 'string' ? value.split(',') : value,
     );
   };
 
-  const handleChange = (event) => {
-    setAge(event.target.value);
+  console.log(departmentName)
+  useEffect(() =>{
+    async function loadDepartments(){
+      const response = await api.get("/api/department/v1");
+      setDepartments(response.data)
+    }
+    loadDepartments();
+    async function loadClients(){
+      const response = await api.get("/api/clients/v1");
+      setClients(response.data)
+    }
+    loadClients();
+    async function loadPM(){
+      const response = await api.get("/api/projects/v1/managerplanner");
+      setPMs(response.data)
+    }
+    loadPM();
+  },[]);
+
+
+  const handleChangeDateContract = (event) => {
+    setDateContract(event);
+  };
+  const handleChangeDateStart = (event) => {
+    setDateStart(event);
+  };
+  const handleChangeClient = (event) => {
+    setClient(event.target.value);
+  };
+
+  const handleChangePM = (event) => {
+    setPM(event.target.value);
   };
 
   const handleClickOpen = () => {
@@ -98,12 +176,7 @@ export const ProjectsListToolbar = (props) => {
       </Typography>
       <Box sx={{ m: 1 }}>
 
-        <Button
-          startIcon={(<DownloadIcon fontSize="small" />)}
-          sx={{ mr: 1 }}
-        >
-          Export
-        </Button>
+
 
         <Button onClick={handleClickOpen}
           color="primary"
@@ -159,10 +232,10 @@ onClose={handleClose}>
                 helperText="Insira o nome do projeto"
                 label="Nome do Projeto"
                 name="nameProjetc"
-
                 required
-
                 variant="outlined"
+                value={projectName}
+                onChange={e => setProjectName(e.target.value)}
               />
             </Grid>
             <Grid
@@ -178,20 +251,18 @@ sx={{ minWidth:240, maxWidth:240}}>
         <Select
           labelId="demo-simple-select-required-label"
           id="demo-simple-select-required"
-          value={age}
+          value={client}
           label="Cliente"
-          onChange={handleChange}
+          onChange={handleChangeClient}
           MenuProps={MenuProps}
         >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          <MenuItem value={10}>VALE</MenuItem>
-          <MenuItem value={20}>CEMIG</MenuItem>
-          <MenuItem value={30}>ANGLO GOLD</MenuItem>
-          <MenuItem value={10}>HONDA</MenuItem>
-          <MenuItem value={20}>COLGATE</MenuItem>
-          <MenuItem value={30}>AMAZON</MenuItem>
+          {clientList.map((name) => (
+            <MenuItem value={name.id}>
+             {name.name}
+            </MenuItem>
+          ))}
+
+
         </Select>
         <FormHelperText>Required</FormHelperText>
       </FormControl>
@@ -205,11 +276,11 @@ sx={{ minWidth:240, maxWidth:240}}>
                 fullWidth
                 label="Hora Planejada"
                 name="menHour"
-
                 required
                 type="number"
-
                 variant="outlined"
+                value={plannerHour}
+                onChange={e => setPlanerHour(e.target.value)}
               />
             </Grid>
             <Grid
@@ -222,6 +293,8 @@ sx={{ minWidth:240, maxWidth:240}}>
                 label="Código"
                 name="codeInter"
                 variant="outlined"
+                value={internalCode}
+                onChange={e => setInternalCode(e.target.value)}
               />
             </Grid>
 
@@ -232,7 +305,9 @@ sx={{ minWidth:240, maxWidth:240}}>
             >
             <DesktopDatePicker
           label="Data do Contrato"
-          inputFormat="MM/dd/yyyy"
+          inputFormat="dd/MM/yyyy"
+          value={dateContract}
+          onChange={handleChangeDateContract}
           renderInput={(params) => <TextField {...params} />}
            />
             </Grid>
@@ -243,7 +318,9 @@ sx={{ minWidth:240, maxWidth:240}}>
             >
             <DesktopDatePicker
           label="Data Início de Execução"
-          inputFormat="MM/dd/yyyy"
+          inputFormat="dd/MM/yyyy"
+          value={dateStart}
+          onChange={handleChangeDateStart}
           renderInput={(params) => <TextField {...params} />}
            />
             </Grid>
@@ -252,24 +329,55 @@ sx={{ minWidth:240, maxWidth:240}}>
               md={6}
               xs={12}
             >
+ <FormControl required
+                         variant="outlined"
+sx={{ minWidth:240, maxWidth:240}}>
+
+        <InputLabel id="demo-simple-select-required-label">Getor do Projeto</InputLabel>
+        <Select
+          labelId="demo-simple-select-required-label"
+          id="demo-simple-select-required"
+          value={plannerManager}
+          label="Cliente"
+          onChange={handleChangePM}
+          MenuProps={MenuProps}
+        >
+          {pmList.map((name) => (
+            <MenuItem value={name.id}>
+             {name.fullName}
+            </MenuItem>
+          ))}
+
+
+        </Select>
+        <FormHelperText>Required</FormHelperText>
+
+        </FormControl>
+
+            </Grid>
+            <Grid
+              item
+              md={6}
+              xs={12}
+            >
               <FormControl sx={{ minWidth:240, maxWidth:240}}>
-        <InputLabel id="demo-multiple-checkbox-label">Gestores do Projeto</InputLabel>
+        <InputLabel id="demo-multiple-checkbox-label">Departamentos</InputLabel>
         <Select
           labelId="demo-multiple-checkbox-label"
           id="demo-multiple-checkbox"
           multiple
           label="Gestor do Projeto"
-          value={personName}
-          onChange={handleChangeUser}
+          value={departmentName}
+          onChange={handleChangeDepartment}
           input={<OutlinedInput label="Gestor do Projeto" />}
           renderValue={(selected) => selected.join(', ')}
           MenuProps={MenuProps}
         >
-          {names.map((name) => (
-            <MenuItem key={name}
-       value={name}>
-              <Checkbox checked={personName.indexOf(name) > -1} />
-              <ListItemText primary={name} />
+          {departmentList.map((name) => (
+            <MenuItem key={name.name}
+       value={name.name}>
+              <Checkbox checked={departmentName.indexOf(name.name) > -1} />
+              <ListItemText primary={name.name} />
             </MenuItem>
           ))}
         </Select>
@@ -282,7 +390,7 @@ sx={{ minWidth:240, maxWidth:240}}>
           <Button variant="outlined"
                   onClick={handleClose}>Cancelar</Button>
           <Button variant="contained"
-                  onClick={handleClose}>Cadastrar</Button>
+                  onClick={handleSubmit}>Cadastrar</Button>
         </DialogActions>
       </Dialog>
 

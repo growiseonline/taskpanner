@@ -7,6 +7,8 @@ import { CustomerListToolbar } from '../../components/customer/customer-list-too
 import { DashboardLayout } from '../../components/dashboard-layout';
 import { projects } from '../../__mocks__/projects';
 
+
+
 const Page = () => (
   <>
     <Head>

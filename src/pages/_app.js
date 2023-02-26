@@ -6,12 +6,10 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider ,createTheme} from '@mui/material/styles';
 
-import { AuthConsumer, AuthProvider } from '../contexts/auth-context';
+import { AuthConsumer, AuthProvider} from '../contexts/auth-context';
 import { createEmotionCache } from '../utils/create-emotion-cache';
 import { registerChartJs } from '../utils/register-chart-js';
 import { theme } from '../theme';
-
-
 
 registerChartJs();
 
@@ -23,6 +21,7 @@ const darkTheme = createTheme({
 });
 
 function App  (props)  {
+
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
 
   const getLayout = Component.getLayout ?? ((page) => page);
@@ -39,19 +38,21 @@ function App  (props)  {
         />
       </Head>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
+
         <ThemeProvider theme={theme} >
           <CssBaseline />
-          <AuthProvider>
+          <AuthProvider >
+
             <AuthConsumer>
               {
-                (auth) => auth.isLoading
-                  ? <Fragment />
-                  : getLayout(<Component {...pageProps} />)
+                (auth) =>  getLayout(<Component {...pageProps} />)
               }
             </AuthConsumer>
-          </AuthProvider>
+            </AuthProvider>
+
         </ThemeProvider>
-      </LocalizationProvider>
+
+    </LocalizationProvider>
     </CacheProvider>
   );
 };

@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import React, {useState,useEffect} from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
+import axios from 'axios';
+import {api} from '../../services/api';
 import {
   Avatar,
   Box,
@@ -22,6 +24,15 @@ export const UsersListResults = ({ users, ...rest }) => {
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
 
+  const [userList, setUsers] = useState([]);
+  useEffect(() =>{
+    async function loadUsuarios(){
+      const response = await api.get("/api/user/v1");
+      setUsers(response.data)
+      console.log(response.data)
+    }
+    loadUsuarios();
+  },[]);
   const handleSelectAll = (event) => {
     let newSelectedUserIds;
 
@@ -87,21 +98,12 @@ export const UsersListResults = ({ users, ...rest }) => {
                   Email
                 </TableCell>
                 <TableCell>
-                  Departamento
-                </TableCell>
-                <TableCell>
                   Phone
-                </TableCell>
-                <TableCell>
-                  Permissão
-                </TableCell>
-                <TableCell>
-                  Registration date
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {users.slice(0, limit).map((user) => (
+              {userList.slice(0, limit).map((user) => (
                 <TableRow
                   hover
                   key={user.id}
@@ -125,31 +127,24 @@ export const UsersListResults = ({ users, ...rest }) => {
                         src={user.avatarUrl}
                         sx={{ mr: 2 }}
                       >
-                        {getInitials(user.name)}
+                        {getInitials(user.fullName)}
                       </Avatar>
                       <Typography
                         color="textPrimary"
                         variant="body1"
                       >
-                        {user.name}
+                        {user.fullName}
                       </Typography>
                     </Box>
                   </TableCell>
                   <TableCell>
-                    {user.email}
+                    {user.userEmail}
                   </TableCell>
+
                   <TableCell>
-                  {user.departament}
+                    {user.phoneNumber}
                   </TableCell>
-                  <TableCell>
-                    {user.phone}
-                  </TableCell>
-                  <TableCell>
-                    {user.role}
-                  </TableCell>
-                  <TableCell>
-                    {format(user.createdAt, 'dd/MM/yyyy')}
-                  </TableCell>
+
                 </TableRow>
               ))}
             </TableBody>

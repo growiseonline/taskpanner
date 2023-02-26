@@ -27,7 +27,7 @@ const Login = () => {
     }),
     onSubmit: () => {
       Router
-        .push('/')
+        .push('/projects')
         .catch(console.error);
     }
   });

@@ -6,7 +6,7 @@ import { useAuthContext } from '../contexts/auth-context';
 export const AuthGuard = (props) => {
   const { children } = props;
   const router = useRouter();
-  const { isAuthenticated } = useAuthContext();
+  const { isAuthenticated,user } = useAuthContext();
   const ignore = useRef(false);
   const [checked, setChecked] = useState(false);
 
@@ -16,6 +16,7 @@ export const AuthGuard = (props) => {
 
   useEffect(
     () => {
+
       if (!router.isReady) {
         return;
       }
@@ -27,17 +28,9 @@ export const AuthGuard = (props) => {
 
       ignore.current = true;
 
-      if (!isAuthenticated) {
-        console.log('Not authenticated, redirecting');
-        router
-          .replace({
-            pathname: '/sign-in',
-            query: router.asPath !== '/' ? { continueUrl: router.asPath } : undefined
-          })
-          .catch(console.error);
-      } else {
+
         setChecked(true);
-      }
+
     },
     [router.isReady]
   );

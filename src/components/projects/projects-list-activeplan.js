@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import React, {useState,useEffect} from 'react';
+import { useRouter } from 'next/router'
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
 import Dialog from '@mui/material/Dialog';
@@ -8,7 +9,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import * as React from 'react';
+import {api} from '../../services/api';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -20,6 +21,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import AddTaskIcon from '@mui/icons-material/AddTask';
 import { SeverityPill } from '../severity-pill';
 import ManageHistoryIcon from '@mui/icons-material/ManageHistory';
+import { useAuthContext } from '../../contexts/auth-context';
 import {
   Avatar,
   Box,
@@ -39,6 +41,8 @@ import {
 import Link from '@mui/material/Link';
 import { getInitials } from '../../utils/get-initials';
 import { id } from 'date-fns/locale';
+import { string } from 'yup';
+
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -49,33 +53,51 @@ const MenuProps = {
     },
   },
 };
-  const names = [
-    'Augusto Morais',
-    'Julio Abrahão',
-    'Ramon Oliveira',
-    'Lucas Oliveira',
-    'Guilherme Rodrigues',
-    'Carlos Eduardo',
-    'Bárbara Barbosa',
-    'Lucas Fiorine',
-  ];
+
+  const statusResult = {
+    'Nao Iniciada' : '5',
+    'Bloqueada' : '3',
+    'Em Progresso' : '2',
+    'Concluída' : '1',
+
+
+  }
 
 export const ProjectsListActivePlanResults = ({ projects, ...rest }) => {
+  const router = useRouter()
+  console.log(router)
+  const  projectid  = router.query.id
+
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
   const [open, setOpen] = React.useState(false);
+  const [taskList, setTasks] = React.useState([]);
+  const [newExecutedHour, setExecute] = React.useState();
+  const [newStatus, setStatus] = React.useState();
+  const [newDateExecute , setDateExecute] = React.useState();
+  const [newNoteExecutor,setNoteExecutor] = React.useState();
+  const [actvID, setActvID] = React.useState();
 
-  const [age, setAge] = React.useState('');
-  const [scope, setScope] = React.useState('');
+  useEffect(() =>{
+  async function loadTasks(){
+    const response = await api.get("/api/ActivityPlan/v1/TasksByProject?projectId="+ projectid);
+    setTasks(response.data)
 
-  const [personName, setPersonName] = React.useState([]);
+
+  }
+  loadTasks();
+},[]);
+
+
   const handleChangeScope = (event) => {
-    setScope(event.target.value);
+    setStatus(event.target.value);
   };
   const handleChange = (event) => {
     setAge(event.target.value);
   };
+
+
 
   const handleSelectAll = (event) => {
     let newSelectedCustomerIds;
@@ -89,34 +111,23 @@ export const ProjectsListActivePlanResults = ({ projects, ...rest }) => {
     setSelectedCustomerIds(newSelectedCustomerIds);
   };
 
-  const handleSelectOne = (event, id) => {
-    const selectedIndex = selectedCustomerIds.indexOf(id);
-    let newSelectedCustomerIds = [];
 
-    if (selectedIndex === -1) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds, id);
-    } else if (selectedIndex === 0) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds.slice(1));
-    } else if (selectedIndex === selectedCustomerIds.length - 1) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(
-        selectedCustomerIds.slice(0, selectedIndex),
-        selectedCustomerIds.slice(selectedIndex + 1)
-      );
-    }
-
-    setSelectedCustomerIds(newSelectedCustomerIds);
-  };
 
   const handleLimitChange = (event) => {
     setLimit(event.target.value);
   };
-
+ console.log(newExecutedHour)
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
-  const handleClickOpen = () => {
+  async function  handleClickOpen(activityid) {
+    console.log(id)
+    const response =  await api.get("/api/ActivityPlan/v1/ActivityPlanByID?activityId=" + activityid);
+    setExecute(response.data.executedManHour)
+    setStatus(response.data.status)
+    setDateExecute(response.data.scheduledDate)
+    setNoteExecutor(response.data.notesFromExecutor)
+    setActvID(activityid)
     setOpen(true);
   };
 
@@ -131,17 +142,6 @@ export const ProjectsListActivePlanResults = ({ projects, ...rest }) => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    checked={selectedCustomerIds.length === projects.length}
-                    color="primary"
-                    indeterminate={
-                      selectedCustomerIds.length > 0
-                      && selectedCustomerIds.length < projects.length
-                    }
-                    onChange={handleSelectAll}
-                  />
-                </TableCell>
                 <TableCell>
                   Tarefa
                 </TableCell>
@@ -172,19 +172,15 @@ export const ProjectsListActivePlanResults = ({ projects, ...rest }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {projects.slice(0, limit).map((projetc) => {
+              {taskList.slice(0, limit).map((projetc) => {
+
                 return (
                   <TableRow
                     hover
                     key={projetc.id}
                     selected={selectedCustomerIds.indexOf(projetc.id) !== -1}
                   >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        checked={selectedCustomerIds.indexOf(projetc.id) !== -1}
-                        onChange={(event) => handleSelectOne(event, projetc.id)}
-                        value="true" />
-                    </TableCell>
+
                     <TableCell>
                       <Box
                         sx={{
@@ -197,7 +193,7 @@ export const ProjectsListActivePlanResults = ({ projects, ...rest }) => {
                           color="textPrimary"
                           variant="body1"
                         >
-                          {projetc.taskName}
+                          {projetc.description}
                         </Typography>
                       </Box>
                     </TableCell>
@@ -206,7 +202,7 @@ export const ProjectsListActivePlanResults = ({ projects, ...rest }) => {
                         color="textPrimary"
                         variant="body1"
                       >
-                        {projetc.executor}
+                        {projetc.executorName}
                       </Typography>
                     </TableCell>
                     <TableCell>
@@ -214,7 +210,7 @@ export const ProjectsListActivePlanResults = ({ projects, ...rest }) => {
                         color="textPrimary"
                         variant="body1"
                       >
-                        {projetc.horaPalanejada}
+                        {projetc.plannedManHour}
                       </Typography>
                     </TableCell>
                     <TableCell>
@@ -222,17 +218,17 @@ export const ProjectsListActivePlanResults = ({ projects, ...rest }) => {
                         color="textPrimary"
                         variant="body1"
                       >
-                        {projetc.horaExecutada}
+                        {projetc.executedManHour}
                       </Typography>
                     </TableCell>
                     <TableCell>
                     <SeverityPill
-                    color={(projetc.status === 'Concluída' && 'success')
-                    || (projetc.status === 'Bloqueada' && 'error')
-                    || (projetc.status === 'Não Iniciada' && 'info')
+                    color={(projetc.statusName === 'Concluída' && 'success')
+                    || (projetc.statusName === 'Bloqueada' && 'error')
+                    || (projetc.statusName === 'Não Iniciada' && 'info')
                     || 'warning'}
                   >
-                    {projetc.status}
+                    {(projetc.statusName)}
                   </SeverityPill>
                     </TableCell>
                     <TableCell>
@@ -240,7 +236,7 @@ export const ProjectsListActivePlanResults = ({ projects, ...rest }) => {
                         color="textPrimary"
                         variant="body1"
                       >
-                        {projetc.daataAgendada}
+                        {projetc.scheduledDate.split('T')[0]}
                       </Typography>
                     </TableCell>
                     <TableCell>
@@ -248,7 +244,7 @@ export const ProjectsListActivePlanResults = ({ projects, ...rest }) => {
                         color="textPrimary"
                         variant="body1"
                       >
-                        {projetc.notesFromPalanner}
+                        {projetc.notesFromPlanner}
                       </Typography>
                     </TableCell>
                     <TableCell>
@@ -260,7 +256,7 @@ export const ProjectsListActivePlanResults = ({ projects, ...rest }) => {
                       </Typography>
                     </TableCell>
                     <TableCell>
-                    <ManageHistoryIcon onClick={handleClickOpen}/>
+                    <ManageHistoryIcon onClick={() =>handleClickOpen(projetc.id)}/>
                     </TableCell>
 
                   </TableRow>
@@ -289,10 +285,10 @@ onClose={handleClose}>
                 fullWidth
                 label="Hora Executada"
                 name="menHour"
-
+                value={newExecutedHour}
                 required
                 type="number"
-
+                onChange={e => setExecute(e.target.value)}
                 variant="outlined"
               />
             </Grid>
@@ -309,16 +305,16 @@ sx={{ minWidth:240, maxWidth:240}}>
         <Select
           labelId="demo-simple-select-required-label"
           id="demo-simple-select-required"
-          value={scope}
+          value={newStatus}
           label="Scope"
           onChange={handleChangeScope}
           MenuProps={MenuProps}
         >
 
-          <MenuItem value={10}><SeverityPill color={'success'}>Concluída</SeverityPill></MenuItem>
-          <MenuItem value={20}><SeverityPill color={'error'}>Bloqueada</SeverityPill></MenuItem>
-          <MenuItem value={30}><SeverityPill color={'warning'}>Em progresso</SeverityPill></MenuItem>
-          <MenuItem value={30}><SeverityPill color={'info'}>Não Iniciada</SeverityPill></MenuItem>
+          <MenuItem value={1}><SeverityPill color={'success'}>Concluída</SeverityPill></MenuItem>
+          <MenuItem value={2}><SeverityPill color={'error'}>Bloqueada</SeverityPill></MenuItem>
+          <MenuItem value={3}><SeverityPill color={'warning'}>Em progresso</SeverityPill></MenuItem>
+          <MenuItem value={5}><SeverityPill color={'info'}>Não Iniciada</SeverityPill></MenuItem>
 
 
         </Select>
@@ -332,8 +328,10 @@ sx={{ minWidth:240, maxWidth:240}}>
             >
             <DesktopDatePicker
           label="Data de Execução"
-          inputFormat="MM/dd/yyyy"
+          inputFormat="dd/MM/yyyy"
           renderInput={(params) => <TextField {...params} />}
+          value={newDateExecute}
+          onChange={e => setDateExecute(e)}
            />
             </Grid>
             <Grid
@@ -355,6 +353,8 @@ sx={{ minWidth:240, maxWidth:240}}>
                 label="Observação"
                 name="codeInter"
                 variant="outlined"
+                value={newNoteExecutor}
+                onChange={e => setNoteExecutor(e)}
               />
             </Grid>
 
@@ -366,7 +366,7 @@ sx={{ minWidth:240, maxWidth:240}}>
           <Button variant="outlined"
                   onClick={handleClose}>Cancelar</Button>
           <Button variant="contained"
-                  onClick={handleClose}>Cadastrar</Button>
+                  onClick={handleClose}>Atualizar</Button>
         </DialogActions>
       </Dialog>
       </PerfectScrollbar>

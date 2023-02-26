@@ -4,6 +4,7 @@ import { styled } from '@mui/material/styles';
 import { AuthGuard } from './auth-guard';
 import { DashboardNavbar } from './dashboard-navbar';
 import { DashboardSidebar } from './dashboard-sidebar';
+import { AuthProvider } from '../contexts/auth-context';
 
 const DashboardLayoutRoot = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -20,7 +21,8 @@ export const DashboardLayout = (props) => {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
 
   return (
-    <AuthGuard>
+
+    <AuthGuard >
       <DashboardLayoutRoot>
         <Box
           sx={{
@@ -38,6 +40,7 @@ export const DashboardLayout = (props) => {
         onClose={() => setSidebarOpen(false)}
         open={isSidebarOpen}
       />
-    </AuthGuard>
+    </AuthGuard >
+
   );
 };

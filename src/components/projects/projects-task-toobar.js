@@ -8,10 +8,12 @@ import {
   InputAdornment,
   SvgIcon, Typography
 } from '@mui/material';
+import { useRouter } from 'next/router'
 import { Search as SearchIcon } from '../../icons/search';
 import { Upload as UploadIcon } from '../../icons/upload';
 import { Download as DownloadIcon } from '../../icons/download';
-import * as React from 'react';
+import React, {useState,useEffect} from 'react';
+import {api} from '../../services/api';
 import ListItemText from '@mui/material/ListItemText';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -28,6 +30,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import Checkbox from '@mui/material/Checkbox';
 import { TextareaAutosize } from '@mui/base';
 
+
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -38,41 +41,63 @@ const MenuProps = {
     },
   },
 };
-  const names = [
-    'Augusto Morais',
-    'Julio Abrahão',
-    'Ramon Oliveira',
-    'Lucas Oliveira',
-    'Guilherme Rodrigues',
-    'Carlos Eduardo',
-    'Bárbara Barbosa',
-    'Lucas Fiorine',
-  ];
+
+
 
 export const ProjectsTaskToolbar = (props) => {
+  const router = useRouter()
+  const  projectid  = router.query.id
   const [open, setOpen] = React.useState(false);
-
-  const [age, setAge] = React.useState('');
   const [scope, setScope] = React.useState('');
+  const [scopeList, setScopeList] = React.useState([]);
+  const [executor, setExecutor] = React.useState([]);
+  const [executorList, setExecutorList] = React.useState([]);
+  const [dateTask, setDateTask] = React.useState('');
+  const [plannedHour, setPlanerHour] = React.useState('');
+  const [observationPlanner, setObservationPlanner]= React.useState('');
 
-  const [personName, setPersonName] = React.useState([]);
+ console.log(executorList)
 
-  const handleChangeUser = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setPersonName(
-      // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value,
-    );
-  };
+  useEffect(() =>{
+    async function loadScopeList(){
+      const response = await api.get("/api/ActiviesScopeList/v1?projectId=" + projectid);
+      setScopeList(response.data)
+    }
+    loadScopeList();
+    async function loadExecutorList(){
+      const response = await api.get("/api/ActivityPlan/v1/ExecutorPlannerList?projectId=" + projectid);
+      setExecutorList(response.data)
+    }
+    loadExecutorList();
 
-  const handleChange = (event) => {
-    setAge(event.target.value);
-  };
-  const handleChangeScope = (event) => {
-    setScope(event.target.value);
-  };
+  },[]);
+
+  async function handleSubmit(){
+    const data = {
+      activitiesScopeListID :  scope,
+      scheduledDate : dateTask,
+      plannedManHour :plannedHour,
+      plannerTeamID :45,
+      executorTeamID : executor,
+      notesFromPlanner : observationPlanner,
+      projectID : projectid
+
+     }
+     console.log(data)
+
+
+      const response = await api.post('/api/ActivityPlan/v1',data);
+
+      if(response.status===200){
+        window.location.href='/projects/'+projectid
+
+      }else{
+        alert('Erro ao cadastrar o usuário!');
+      }
+
+  }
+
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -102,12 +127,7 @@ export const ProjectsTaskToolbar = (props) => {
       </Typography>
       <Box sx={{ m: 1 }}>
 
-        <Button
-          startIcon={(<DownloadIcon fontSize="small" />)}
-          sx={{ mr: 1 }}
-        >
-          Export
-        </Button>
+
 
         <Button onClick={handleClickOpen}
           color="primary"
@@ -143,7 +163,9 @@ export const ProjectsTaskToolbar = (props) => {
       </Card>
     </Box>
     <Dialog open={open}
-onClose={handleClose}>
+onClose={handleClose}
+>
+
         <DialogTitle>Nova Tarefa</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -168,16 +190,15 @@ sx={{ minWidth:240, maxWidth:240}}>
           id="demo-simple-select-required"
           value={scope}
           label="Scope"
-          onChange={handleChangeScope}
+
+          onChange={e => setScope(e.target.value)}
           MenuProps={MenuProps}
         >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          <MenuItem value={10}>Calibrar Medidor</MenuItem>
-          <MenuItem value={20}>Implantação PME</MenuItem>
-          <MenuItem value={30}>Criação de Dashboards</MenuItem>
-          <MenuItem value={10}>Treinamento PME</MenuItem>
+            {scopeList.map((name) => (
+            <MenuItem value={name.id}>
+             {name.description}
+            </MenuItem>
+          ))}
 
         </Select>
         <FormHelperText>Required</FormHelperText>
@@ -196,20 +217,16 @@ sx={{ minWidth:240, maxWidth:240}}>
         <Select
           labelId="demo-simple-select-required-label"
           id="demo-simple-select-required"
-          value={age}
+          value={executor}
           label="Executor"
-          onChange={handleChange}
+          onChange={e => setExecutor(e.target.value)}
           MenuProps={MenuProps}
         >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          <MenuItem value={10}>Augusto Morais</MenuItem>
-          <MenuItem value={20}>Ramon Oliveira</MenuItem>
-          <MenuItem value={30}>Allysson Rocha</MenuItem>
-          <MenuItem value={10}>Guilherme Rodrigues</MenuItem>
-          <MenuItem value={20}>Julio Abrahão</MenuItem>
-          <MenuItem value={30}>Lucas Fiorini</MenuItem>
+            {executorList.map((name) => (
+            <MenuItem value={name.pmTeamID}>
+             {name.name}
+            </MenuItem>
+          ))}
         </Select>
         <FormHelperText>Required</FormHelperText>
       </FormControl>
@@ -223,10 +240,10 @@ sx={{ minWidth:240, maxWidth:240}}>
                 fullWidth
                 label="Hora Planejada"
                 name="menHour"
-
                 required
+                value={plannedHour}
                 type="number"
-
+                onChange={e => setPlanerHour(e.target.value)}
                 variant="outlined"
               />
             </Grid>
@@ -238,8 +255,10 @@ sx={{ minWidth:240, maxWidth:240}}>
             >
             <DesktopDatePicker
           label="Data Agendada"
-          inputFormat="MM/dd/yyyy"
+          inputFormat="dd/MM/yyyy"
           renderInput={(params) => <TextField {...params} />}
+          value={dateTask}
+          onChange={e => setDateTask(e)}
            />
             </Grid>
             <Grid
@@ -261,6 +280,8 @@ sx={{ minWidth:240, maxWidth:240}}>
                 label="Observação"
                 name="codeInter"
                 variant="outlined"
+                value={observationPlanner}
+                onChange={e => setObservationPlanner(e.target.value)}
               />
             </Grid>
 
@@ -272,7 +293,7 @@ sx={{ minWidth:240, maxWidth:240}}>
           <Button variant="outlined"
                   onClick={handleClose}>Cancelar</Button>
           <Button variant="contained"
-                  onClick={handleClose}>Cadastrar</Button>
+                  onClick={handleSubmit}>Cadastrar</Button>
         </DialogActions>
       </Dialog>
 

@@ -8,7 +8,9 @@ import { DashboardLayout } from '../../components/dashboard-layout';
 import { projectsTasks } from '../../__mocks__/project-task';
 import { GetStaticPaths, GetStaticProps } from 'next';
 
+
 const Page = () => (
+
 <>
     <Head>
       <title>

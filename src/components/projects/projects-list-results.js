@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, {useState,useEffect} from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
 import Dialog from '@mui/material/Dialog';
@@ -10,7 +10,10 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { format } from 'date-fns';
 import EditIcon from '@mui/icons-material/Edit';
+import {api} from '../../services/api';
 import AddTaskIcon from '@mui/icons-material/AddTask';
+
+
 import {
   Avatar,
   Box,
@@ -35,6 +38,28 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
   const [page, setPage] = useState(0);
 
 
+  const [projectList, setProjects] = useState([]);
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const handleChangeDense = (event) => {
+    setDense(event.target.checked);
+  };
+
+  useEffect(() =>{
+    async function loadProjects(){
+      const response = await api.get("/api/projects/v1");
+      setProjects(response.data)
+
+    }
+    loadProjects();
+  },[]);
   const handleSelectAll = (event) => {
     let newSelectedCustomerIds;
 
@@ -82,19 +107,8 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    checked={selectedCustomerIds.length === projects.length}
-                    color="primary"
-                    indeterminate={
-                      selectedCustomerIds.length > 0
-                      && selectedCustomerIds.length < projects.length
-                    }
-                    onChange={handleSelectAll}
-                  />
-                </TableCell>
                 <TableCell>
-                  Name
+                  Nome do Projeto
                 </TableCell>
                 <TableCell>
                   Cliente
@@ -104,6 +118,9 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                 </TableCell>
                 <TableCell>
                  Hora Homem Executada
+                </TableCell>
+                <TableCell>
+                 Gestor do Projeto
                 </TableCell>
                 <TableCell>
                   Início de Execução
@@ -120,19 +137,14 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {projects.slice(0, limit).map((projetc) => {
+              {projectList.slice(0, limit).map((projetc) => {
                 return (
                   <TableRow
                     hover
-                    key={projetc.id}
-                    selected={selectedCustomerIds.indexOf(projetc.id) !== -1}
+                    key={projetc.projectID}
+                    selected={selectedCustomerIds.indexOf(projetc.projectID) !== -1}
                   >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        checked={selectedCustomerIds.indexOf(projetc.id) !== -1}
-                        onChange={(event) => handleSelectOne(event, projetc.id)}
-                        value="true" />
-                    </TableCell>
+
                     <TableCell>
                       <Box
                         sx={{
@@ -145,7 +157,7 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                           color="textPrimary"
                           variant="body1"
                         >
-                          {projetc.Name}
+                          {projetc.projectName}
                         </Typography>
                       </Box>
                     </TableCell>
@@ -154,7 +166,7 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                         color="textPrimary"
                         variant="body1"
                       >
-                        {projetc.client}
+                        {projetc.clientName}
                       </Typography>
                     </TableCell>
                     <TableCell>
@@ -162,7 +174,7 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                         color="textPrimary"
                         variant="body1"
                       >
-                        {projetc.PlannedManHour}
+                        {projetc.plannedManHour}
                       </Typography>
                     </TableCell>
                     <TableCell>
@@ -170,7 +182,7 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                         color="textPrimary"
                         variant="body1"
                       >
-                        {projetc.ExecutedManHour}
+                        {0}
                       </Typography>
                     </TableCell>
                     <TableCell>
@@ -178,7 +190,7 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                         color="textPrimary"
                         variant="body1"
                       >
-                        {projetc.StartDate}
+                        {projetc.full_name}
                       </Typography>
                     </TableCell>
                     <TableCell>
@@ -186,7 +198,7 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                         color="textPrimary"
                         variant="body1"
                       >
-                        {projetc.StartDate}
+                        {projetc.startDate}
                       </Typography>
                     </TableCell>
                     <TableCell>
@@ -194,11 +206,19 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                         color="textPrimary"
                         variant="body1"
                       >
-                        {projetc.PMTeamID}
+                        {projetc.startDate}
                       </Typography>
                     </TableCell>
                     <TableCell>
-                    <Link href={`/projects/ + ${projetc.id}`}><AddTaskIcon /></Link>
+                      <Typography
+                        color="textPrimary"
+                        variant="body1"
+                      >
+                        {projetc.departmentName}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                    <Link href={`/projects/${projetc.projectID}`}><AddTaskIcon /></Link>
 
                     </TableCell>
 
@@ -208,11 +228,6 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
             </TableBody>
           </Table>
         </Box>
-
-
-
-
-
 
       </PerfectScrollbar>
       <TablePagination
@@ -224,12 +239,7 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
         rowsPerPage={limit}
         rowsPerPageOptions={[5, 10, 25]}
       />
-
-
     </Card>
-
-
-
 
   );
 };

@@ -191,9 +191,9 @@ onClose={handleClose}>
     onChange={handleChange}
 
   >
-    <MenuItem value={10}>DEPSOF</MenuItem>
-    <MenuItem value={20}>DEPSIS</MenuItem>
-    <MenuItem value={30}>DEPFAC</MenuItem>
+    <MenuItem value={1}>DEPSOF</MenuItem>
+    <MenuItem value={2}>DEPSIS</MenuItem>
+    <MenuItem value={3}>DEPFAC</MenuItem>
   </Select>
             </Grid>
             <Grid
