@@ -267,7 +267,7 @@ async function loadTasksRefresh(){
                         color="textPrimary"
                         variant="body1"
                       >
-                        {projetc.scheduledDate.split('T')[0]}
+                          {format(Date.parse(projetc.startDate), 'dd/MM/yyyy')}
                       </Typography>
                     </TableCell>
                     <TableCell>

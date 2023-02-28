@@ -28,7 +28,8 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Typography
+  Typography,
+  LinearProgress
 
 } from '@mui/material';
 import Link from '@mui/material/Link';
@@ -87,6 +88,9 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                 </TableCell>
                 <TableCell>
                  Hora Homem Executada
+                </TableCell>
+                <TableCell>
+                 Progresso
                 </TableCell>
                 <TableCell>
                  Gestor do Projeto
@@ -155,6 +159,19 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                       </Typography>
                     </TableCell>
                     <TableCell>
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <Box sx={{ width: '100%', mr: 1 }}>
+        <LinearProgress variant="determinate" value={projetc.executedManHour*100/projetc.plannedManHour} />
+      </Box>
+      <Box sx={{ minWidth: 35 }}>
+        <Typography variant="body2" color="text.secondary">{`${Math.round(
+          projetc.executedManHour*100/projetc.plannedManHour
+        )}%`}</Typography>
+      </Box>
+    </Box>
+
+                    </TableCell>
+                    <TableCell>
                       <Typography
                         color="textPrimary"
                         variant="body1"
@@ -167,7 +184,7 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                         color="textPrimary"
                         variant="body1"
                       >
-                        {projetc.startDate}
+                        {format(Date.parse(projetc.startDate), 'dd/MM/yyyy')}
                       </Typography>
                     </TableCell>
                     <TableCell>
@@ -175,7 +192,8 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                         color="textPrimary"
                         variant="body1"
                       >
-                        {projetc.startDate}
+                        {format(Date.parse(projetc.startDate), 'dd/MM/yyyy')}
+
                       </Typography>
                     </TableCell>
                     <TableCell>
@@ -186,6 +204,7 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                         {projetc.departmentName}
                       </Typography>
                     </TableCell>
+
                     <TableCell>
                     <Link href={`/projects/${projetc.projectID}`}><AddTaskIcon /></Link>
 
