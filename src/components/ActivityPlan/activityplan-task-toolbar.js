@@ -45,8 +45,7 @@ const MenuProps = {
 
 
 
-export const ProjectsTaskToolbar = (props) => {
-  const user = JSON.parse(localStorage.getItem('user-data'))
+export const ActivityTaskToolbar = (props) => {
   const router = useRouter()
   const  projectid  = router.query.id
   const [open, setOpen] = React.useState(false);
@@ -73,13 +72,12 @@ export const ProjectsTaskToolbar = (props) => {
     loadExecutorList();
   },[]);
 
-
   async function handleSubmit(){
     const data = {
       activitiesScopeListID :  scope,
-      scheduledDate :  dateTask,
+      scheduledDate : dateTask,
       plannedManHour :plannedHour,
-      plannerTeamID :user.id,
+      plannerTeamID :45,
       executorTeamID : executor,
       notesFromPlanner : observationPlanner,
       projectID : projectid
@@ -129,12 +127,7 @@ export const ProjectsTaskToolbar = (props) => {
       </Typography>
 
       <Box sx={{ m: 1 }}>
-        <Button onClick={handleClickOpen}
-          color="primary"
-          variant="outlined"
-        >
-          Atribuir nova Tarefa
-        </Button>
+
       </Box>
     </Box>
     <Box sx={{ mt: 3 }}>
@@ -162,140 +155,6 @@ export const ProjectsTaskToolbar = (props) => {
         </CardContent>
       </Card>
     </Box>
-    <Dialog open={open}
-onClose={handleClose}
->
-
-        <DialogTitle>Nova Tarefa</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-          </DialogContentText>
-          <CardContent>
-          <Grid
-            container
-            spacing={3}
-          >
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-                 <FormControl required
-                         variant="outlined"
-sx={{ minWidth:240, maxWidth:240}}>
-
-        <InputLabel id="demo-simple-select-required-label">Tarefa</InputLabel>
-        <Select
-          labelId="demo-simple-select-required-label"
-          id="demo-simple-select-required"
-          value={scope}
-          label="Scope"
-
-          onChange={e => setScope(e.target.value)}
-          MenuProps={MenuProps}
-        >
-            {scopeList.map((name) => (
-            <MenuItem value={name.id}>
-             {name.description}
-            </MenuItem>
-          ))}
-
-        </Select>
-        <FormHelperText>Required</FormHelperText>
-      </FormControl>
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-             <FormControl required
-                         variant="outlined"
-sx={{ minWidth:240, maxWidth:240}}>
-
-        <InputLabel id="demo-simple-select-required-label">Executor</InputLabel>
-        <Select
-          labelId="demo-simple-select-required-label"
-          id="demo-simple-select-required"
-          value={executor}
-          label="Executor"
-          onChange={e => setExecutor(e.target.value)}
-          MenuProps={MenuProps}
-        >
-            {executorList.map((name) => (
-            <MenuItem value={name.pmTeamID}>
-             {name.name}
-            </MenuItem>
-          ))}
-        </Select>
-        <FormHelperText>Required</FormHelperText>
-      </FormControl>
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Hora Planejada"
-                name="menHour"
-                required
-                value={plannedHour}
-                type="number"
-                onChange={e => setPlanerHour(e.target.value)}
-                variant="outlined"
-              />
-            </Grid>
-
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-            <DesktopDatePicker
-          label="Data Agendada"
-          inputFormat="dd/MM/yyyy"
-          renderInput={(params) => <TextField {...params} />}
-          value={dateTask}
-          onChange={e => setDateTask(e)}
-           />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-
-            </Grid>
-            <Grid
-              item
-              md={12}
-              xs={12}
-
-            >
-              <TextField
-
-                fullWidth
-                label="Observação"
-                name="codeInter"
-                variant="outlined"
-                value={observationPlanner}
-                onChange={e => setObservationPlanner(e.target.value)}
-              />
-            </Grid>
-
-
-          </Grid>
-        </CardContent>
-        </DialogContent>
-        <DialogActions>
-          <Button variant="outlined"
-                  onClick={handleClose}>Cancelar</Button>
-          <Button variant="contained"
-                  onClick={handleSubmit}>Cadastrar</Button>
-        </DialogActions>
-      </Dialog>
 
   </Box>
 

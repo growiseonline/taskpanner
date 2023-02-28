@@ -28,11 +28,7 @@ const items = [
     title: 'Dashboard'
   },*/
 
-  {
-    href: '/users',
-    icon: (<UsersIcon fontSize="small" />),
-    title: 'Usuários'
-  },
+
   /* {
     href: '/customers',
     icon: (<FormatListBulletedIcon fontSize="small" />),
@@ -48,16 +44,12 @@ const items = [
     icon: (<UsersIcon fontSize="small" />),
     title: 'Times'
   },*/
+
   {
-    href: '/projects',
-    icon: (<AssignmentIcon fontSize="small" />),
-    title: 'Projetos'
-  },
-  {
-    href: '/projects/id',
+    href: '/activityplan',
     icon: (<TaskIcon fontSize="small" />),
     title: 'Tarefas'
-  },
+  }
   /* {
     href: '/account',
     icon: (<UserIcon fontSize="small" />),
@@ -72,8 +64,46 @@ const items = [
 
 
 ];
+const itemAdmin =[
+  {
+    href: '/users',
+    icon: (<UsersIcon fontSize="small" />),
+    title: 'Usuários'
+  },
+  {
+    href: '/projects',
+    icon: (<AssignmentIcon fontSize="small" />),
+    title: 'Projetos'
+  },
+  {
+    href: '/activityplan',
+    icon: (<TaskIcon fontSize="small" />),
+    title: 'Tarefas'
+  }
+]
 
 export const DashboardSidebar = (props) => {
+  const user = JSON.parse(localStorage.getItem("user-data"))
+  let menu = null;
+  if (user.permissionId == '1') {
+    menu = itemAdmin.map((item) => (
+      <NavItem
+        key={item.title}
+        icon={item.icon}
+        href={item.href}
+        title={item.title}
+      />
+    ))
+  } if (user.permissionId == '2'){
+    menu = items.map((item) => (
+      <NavItem
+        key={item.title}
+        icon={item.icon}
+        href={item.href}
+        title={item.title}
+      />
+    ))
+  }
   const { open, onClose } = props;
   const router = useRouter();
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'), {
@@ -138,14 +168,8 @@ export const DashboardSidebar = (props) => {
           }}
         />
         <Box sx={{ flexGrow: 1 }}>
-          {items.map((item) => (
-            <NavItem
-              key={item.title}
-              icon={item.icon}
-              href={item.href}
-              title={item.title}
-            />
-          ))}
+
+          {menu}
         </Box>
         <Divider sx={{ borderColor: '#2D3748' }} />
         <Box

@@ -63,10 +63,8 @@ const MenuProps = {
 
   }
 
-export const ProjectsListActivePlanResults = ({ projects, ...rest }) => {
-  const router = useRouter()
-  console.log(router)
-  const  projectid  = router.query.id
+export const UserListActivePlanResults = ({ projects, ...rest }) => {
+  const user = JSON.parse(localStorage.getItem('user-data'))
 
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
@@ -80,14 +78,15 @@ export const ProjectsListActivePlanResults = ({ projects, ...rest }) => {
   const [actvID, setActvID] = React.useState();
   const [totalRecords, setRecords] = React.useState();
 
+
   async function loadTasks(){
-    const response = await api.get(`/api/ActivityPlan/v1/TasksByProject?projectId=${projectid}&page=${page}&size=${limit}&searchExecutor=`);
+    const response = await api.get(`/api/ActivityPlan/v1/TasksByUser?userId=${user.id}&page=${page}&size=${limit}&searchExecutor=`);
     setTasks(response.data.activitList)
     setRecords(response.data.totalRecords)
   }
   useEffect(() =>{
   loadTasks();
-},[page]);
+},[]);
 
 async function loadTasksRefresh(){
   loadTasks()
@@ -167,6 +166,9 @@ async function loadTasksRefresh(){
                   Tarefa
                 </TableCell>
                 <TableCell>
+                  Projeto
+                </TableCell>
+                <TableCell>
                   Executor
                 </TableCell>
                 <TableCell>
@@ -217,6 +219,14 @@ async function loadTasksRefresh(){
                           {projetc.description}
                         </Typography>
                       </Box>
+                    </TableCell>
+                    <TableCell>
+                      <Typography
+                        color="textPrimary"
+                        variant="body1"
+                      >
+                        {projetc.projectName}
+                      </Typography>
                     </TableCell>
                     <TableCell>
                       <Typography
@@ -408,6 +418,6 @@ sx={{ minWidth:240, maxWidth:240}}>
   );
 };
 
-ProjectsListActivePlanResults.propTypes = {
+UserListActivePlanResults.propTypes = {
   projects: PropTypes.array.isRequired
 };

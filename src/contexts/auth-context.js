@@ -46,7 +46,12 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("access-token", response.data.accessToken);
     localStorage.setItem("user-data", JSON.stringify(response.data.user))
     setUser(response.data.user)
-    Router.push('/projects');
+    if(response.data.user.permissionId =='1'){
+      Router.push('/projects');
+    }else {
+      Router.push('/activityplan');
+    }
+
 
   };
 

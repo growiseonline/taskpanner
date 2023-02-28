@@ -10,8 +10,11 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { format } from 'date-fns';
 import EditIcon from '@mui/icons-material/Edit';
+import TableContainer from '@mui/material/TableContainer';
+import Paper from '@mui/material/Paper';
 import {api} from '../../services/api';
 import AddTaskIcon from '@mui/icons-material/AddTask';
+import Pagination from '@mui/material/Pagination';
 
 
 import {
@@ -35,67 +38,32 @@ import { id } from 'date-fns/locale';
 export const ProjectsListResults = ({ projects, ...rest }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
+  const [totalRecords, setRecords] = React.useState();
 
-
+  const user = JSON.parse(localStorage.getItem("user-data"))
+  console.log(user.permissionId)
   const [projectList, setProjects] = useState([]);
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  const handleChangeDense = (event) => {
-    setDense(event.target.checked);
-  };
-
+  const loadProjects = async () => {
+    const response = await api.get(`/api/projects/v1?page=${page}&size=${limit}`);
+    setProjects(response.data.projectList)
+    setRecords(response.data.totalRecors)
+  }
   useEffect(() =>{
-    async function loadProjects(){
-      const response = await api.get("/api/projects/v1");
-      setProjects(response.data)
-
-    }
     loadProjects();
-  },[]);
-  const handleSelectAll = (event) => {
-    let newSelectedCustomerIds;
-
-    if (event.target.checked) {
-      newSelectedCustomerIds = projects.map((project) => project.id);
-    } else {
-      newSelectedCustomerIds = [];
-    }
-
-    setSelectedCustomerIds(newSelectedCustomerIds);
-  };
-
-  const handleSelectOne = (event, id) => {
-    const selectedIndex = selectedCustomerIds.indexOf(id);
-    let newSelectedCustomerIds = [];
-
-    if (selectedIndex === -1) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds, id);
-    } else if (selectedIndex === 0) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds.slice(1));
-    } else if (selectedIndex === selectedCustomerIds.length - 1) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(
-        selectedCustomerIds.slice(0, selectedIndex),
-        selectedCustomerIds.slice(selectedIndex + 1)
-      );
-    }
-
-    setSelectedCustomerIds(newSelectedCustomerIds);
-  };
+  },[page]);
 
   const handleLimitChange = (event) => {
     setLimit(event.target.value);
+
   };
 
+  async function  ChangePage(){
+
+    const response = await api.get(`/api/projects/v1?page=${page}&size=${limit}`);
+    setProjects(response.data)
+  }
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
@@ -104,6 +72,7 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
     <Card {...rest}>
       <PerfectScrollbar>
         <Box sx={{ minWidth: 1050 }}>
+
           <Table>
             <TableHead>
               <TableRow>
@@ -182,7 +151,7 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                         color="textPrimary"
                         variant="body1"
                       >
-                        {0}
+                        {projetc.executedManHour}
                       </Typography>
                     </TableCell>
                     <TableCell>
@@ -227,12 +196,13 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
               })}
             </TableBody>
           </Table>
+
         </Box>
 
       </PerfectScrollbar>
       <TablePagination
         component="div"
-        count={projects.length}
+        count={totalRecords}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleLimitChange}
         page={page}
@@ -245,5 +215,5 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
 };
 
 ProjectsListResults.propTypes = {
-  projects: PropTypes.array.isRequired
+  projectList: PropTypes.array.isRequired
 };

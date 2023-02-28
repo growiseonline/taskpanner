@@ -6,7 +6,7 @@ export function getAPIClient() {
 
 
 const api = axios.create({
-    baseURL: 'http://172.16.9.13:8084'
+    baseURL: 'https://sigecloud.memt.com.br/taskplanner'
 })
 
 api.interceptors.request.use(config => {

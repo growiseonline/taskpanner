@@ -66,7 +66,7 @@ sx={{ mt: 1 }}>
                 required
                 fullWidth
                 id="email"
-                label="Email Address"
+                label="Usuário"
                 name="email"
                 autoComplete="email"
                 autoFocus
@@ -76,7 +76,7 @@ sx={{ mt: 1 }}>
                 required
                 fullWidth
                 name="password"
-                label="Password"
+                label="Senha"
                 type="password"
                 id="password"
                 autoComplete="current-password"
@@ -92,7 +92,7 @@ color="primary" />}
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >
-                Sign In
+                Entrar
               </Button>
               <Grid container>
                 <Grid item
@@ -103,10 +103,7 @@ variant="body2">
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link href="#"
-variant="body2">
-                    {"Don't have an account? Sign Up"}
-                  </Link>
+
                 </Grid>
               </Grid>
             </Box>

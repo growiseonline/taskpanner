@@ -29,6 +29,7 @@ import Checkbox from '@mui/material/Checkbox';
 import {api} from '../../services/api';
 import React, {useState,useEffect} from 'react';
 import { useRouter } from 'next/router';
+import {ProjectsListResults} from './projects-list-results'
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -40,16 +41,7 @@ const MenuProps = {
     },
   },
 };
-  const names = [
-    'Augusto Morais',
-    'Julio Abrahão',
-    'Ramon Oliveira',
-    'Lucas Oliveira',
-    'Guilherme Rodrigues',
-    'Carlos Eduardo',
-    'Bárbara Barbosa',
-    'Lucas Fiorine',
-  ];
+
 
 export const ProjectsListToolbar = (props) => {
   const router = useRouter();
@@ -74,9 +66,9 @@ export const ProjectsListToolbar = (props) => {
       plannedManHour : plannerHour,
       dapartment : departmentName ,
       internalCode : internalCode,
-      startDate : dateStart.getDate()+ "/" + dateStart.getMonth() + "/" + dateStart.getFullYear(),
-      contractEndDate : dateContract.getDate()+ "/" + dateContract.getMonth() + "/" + dateContract.getFullYear(),
-      PMTeamID : String(plannerManager)
+      startDate : dateStart.getDate()+ "-" + dateStart.getMonth() + "-" + dateStart.getFullYear(),
+      contractEndDate : dateContract.getDate()+ "-" + dateContract.getMonth() + "-" + dateContract.getFullYear(),
+      PMTeamID : String(8)
      }
      console.log(data)
 
@@ -91,6 +83,8 @@ export const ProjectsListToolbar = (props) => {
           pathname: '/projects',
           //  query: router.asPath !== '/' ? { continueUrl: router.asPath } : undefined
         })
+
+
         window.location.href='/projects'
 
       }else{
