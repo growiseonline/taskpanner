@@ -101,11 +101,8 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                 <TableCell>
                   Data de Criação
                 </TableCell>
-                <TableCell>
-                  Time
-                </TableCell>
-                <TableCell>
 
+                <TableCell>
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -161,7 +158,10 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                     <TableCell>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
       <Box sx={{ width: '100%', mr: 1 }}>
-        <LinearProgress variant="determinate" value={projetc.executedManHour*100/projetc.plannedManHour} />
+              {projetc.executedManHour < projetc.plannedManHour &&<LinearProgress variant="determinate" value={projetc.executedManHour*100/projetc.plannedManHour}  ></LinearProgress>}
+              {projetc.executedManHour == projetc.plannedManHour &&<LinearProgress variant="determinate" value={projetc.executedManHour*100/projetc.plannedManHour} color="success"  ></LinearProgress>}
+              {projetc.executedManHour > projetc.plannedManHour &&<LinearProgress variant="determinate" value={100} color="error"  ></LinearProgress>}
+
       </Box>
       <Box sx={{ minWidth: 35 }}>
         <Typography variant="body2" color="text.secondary">{`${Math.round(
@@ -196,14 +196,7 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
 
                       </Typography>
                     </TableCell>
-                    <TableCell>
-                      <Typography
-                        color="textPrimary"
-                        variant="body1"
-                      >
-                        {projetc.departmentName}
-                      </Typography>
-                    </TableCell>
+
 
                     <TableCell>
                     <Link href={`/projects/${projetc.projectID}`}><AddTaskIcon /></Link>
