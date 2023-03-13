@@ -113,6 +113,7 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                     hover
                     key={projetc.projectID}
                     selected={selectedCustomerIds.indexOf(projetc.projectID) !== -1}
+
                   >
 
                     <TableCell>

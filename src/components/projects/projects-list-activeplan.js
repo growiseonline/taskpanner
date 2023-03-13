@@ -195,11 +195,13 @@ async function loadTasksRefresh(){
             <TableBody>
               {taskList.slice(0, limit).map((projetc) => {
 
+                const dis = false;
                 return (
                   <TableRow
                     hover
                     key={projetc.id}
-                    selected={selectedCustomerIds.indexOf(projetc.id) !== -1}
+
+                    disabled={true}
                   >
 
                     <TableCell>

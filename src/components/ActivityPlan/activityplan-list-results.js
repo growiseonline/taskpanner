@@ -267,7 +267,8 @@ async function loadTasksRefresh(){
                         color="textPrimary"
                         variant="body1"
                       >
-                          {format(Date.parse(projetc.startDate), 'dd/MM/yyyy')}
+                        {format(Date.parse(projetc.scheduledDate), 'dd/MM/yyyy')}
+
                       </Typography>
                     </TableCell>
                     <TableCell>

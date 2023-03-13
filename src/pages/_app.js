@@ -30,7 +30,7 @@ function App  (props)  {
     <CacheProvider value={emotionCache}>
       <Head>
         <title>
-          Material Kit Pro
+          Task Planner Metrum
         </title>
         <meta
           name="viewport"
@@ -38,7 +38,6 @@ function App  (props)  {
         />
       </Head>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
-
         <ThemeProvider theme={theme} >
           <CssBaseline />
           <AuthProvider >
