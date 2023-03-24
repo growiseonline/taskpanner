@@ -66,13 +66,13 @@ export const ProjectsListToolbar = (props) => {
       plannedManHour : plannerHour,
       dapartment : departmentName ,
       internalCode : internalCode,
-      startDate : dateStart.getDate()+ "-" + padTo2Digits( dateStart.getMonth()) + "-" + dateStart.getFullYear()+'T00:00:00',
-      contractEndDate : dateContract.getDate()+ "-" +padTo2Digits( dateContract.getMonth()) + "-" + dateContract.getFullYear() + 'T00:00:00',
+      startDate : dateStart.getFullYear()+ "-" + padTo2Digits( dateStart.getMonth() +1) + "-" + dateStart.getDate(),
+      contractEndDate : dateContract.getFullYear()+ "-" +padTo2Digits( dateContract.getMonth() +1) + "-" + dateContract.getDate(),
       PMTeamID : String(8)
      }
      console.log(data.contractEndDate)
      function padTo2Digits(num) {
-      return num.toString().padStart(2, '0');
+      return num.toString().padStart(2, '0'); 
     }
      if(projectName!==''&&projectName!==''&&plannerHour!==''&&internalCode!==''){
       //Requisição
