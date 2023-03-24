@@ -87,7 +87,7 @@ export const ProjectsListToolbar = (props) => {
         })
 
 
-        //window.location.href='/projects'
+        window.location.href='/projects'
 
       }else{
         alert('Erro ao cadastrar o usuário!');
