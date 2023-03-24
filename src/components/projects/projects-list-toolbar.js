@@ -66,12 +66,14 @@ export const ProjectsListToolbar = (props) => {
       plannedManHour : plannerHour,
       dapartment : departmentName ,
       internalCode : internalCode,
-      startDate : dateStart.getDate()+ "-" + dateStart.getMonth() + "-" + dateStart.getFullYear(),
-      contractEndDate : dateContract.getDate()+ "-" + dateContract.getMonth() + "-" + dateContract.getFullYear(),
+      startDate : dateStart.getFullYear()+ "-" + padTo2Digits( dateStart.getMonth()) + "-" + dateStart.getDate()+' 00:00:00',
+      contractEndDate : dateContract.getFullYear()+ "-" +padTo2Digits( dateContract.getMonth()) + "-" + dateContract.getDate() + ' 00:00:00',
       PMTeamID : String(8)
      }
-     console.log(data)
-
+     console.log(data.contractEndDate)
+     function padTo2Digits(num) {
+      return num.toString().padStart(2, '0');
+    }
      if(projectName!==''&&projectName!==''&&plannerHour!==''&&internalCode!==''){
       //Requisição
       console.log(data)
@@ -85,7 +87,7 @@ export const ProjectsListToolbar = (props) => {
         })
 
 
-        window.location.href='/projects'
+        //window.location.href='/projects'
 
       }else{
         alert('Erro ao cadastrar o usuário!');
