@@ -66,8 +66,8 @@ export const ProjectsListToolbar = (props) => {
       plannedManHour : plannerHour,
       dapartment : departmentName ,
       internalCode : internalCode,
-      startDate : dateStart.getFullYear()+ "-" + padTo2Digits( dateStart.getMonth()) + "-" + dateStart.getDate()+' 00:00:00',
-      contractEndDate : dateContract.getFullYear()+ "-" +padTo2Digits( dateContract.getMonth()) + "-" + dateContract.getDate() + ' 00:00:00',
+      startDate : dateStart.getFullYear()+ "-" + padTo2Digits( dateStart.getMonth()) + "-" + dateStart.getDate()+'T00:00:00',
+      contractEndDate : dateContract.getFullYear()+ "-" +padTo2Digits( dateContract.getMonth()) + "-" + dateContract.getDate() + 'T00:00:00',
       PMTeamID : String(8)
      }
      console.log(data.contractEndDate)
