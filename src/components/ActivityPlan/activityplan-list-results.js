@@ -190,8 +190,9 @@ async function loadTasksRefresh(){
                   Observação do Executor
                 </TableCell>
                 <TableCell>
-
+                Retrabalho
                 </TableCell>
+
               </TableRow>
             </TableHead>
             <TableBody>
@@ -291,7 +292,18 @@ async function loadTasksRefresh(){
                     <ManageHistoryIcon onClick={() =>handleClickOpen(projetc.id)}/>
                     </TableCell>
 
+                    <TableCell>
+                      <Typography
+                        color="textPrimary"
+                        variant="body1"
+                      >
+                        {projetc.isRework}
+                      </Typography>
+                    </TableCell>
+
+
                   </TableRow>
+
                 );
               })}
             </TableBody>
@@ -346,6 +358,7 @@ sx={{ minWidth:240, maxWidth:240}}>
           <MenuItem value={1}><SeverityPill color={'success'}>Concluída</SeverityPill></MenuItem>
           <MenuItem value={3}><SeverityPill color={'error'}>Bloqueada</SeverityPill></MenuItem>
           <MenuItem value={2}><SeverityPill color={'warning'}>Em progresso</SeverityPill></MenuItem>
+
           <MenuItem value={5}><SeverityPill color={'info'}>Não Iniciada</SeverityPill></MenuItem>
 
 

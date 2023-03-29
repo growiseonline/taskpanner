@@ -1,3 +1,4 @@
+
 import axios from 'axios';
 import { parseCookies } from "nookies";
 
@@ -6,7 +7,7 @@ export function getAPIClient() {
 
 
 const api = axios.create({
-    baseURL: 'https://sigecloud.memt.com.br/taskplanner'
+    baseURL: 'http://172.16.9.13:8084/'
 })
 
 api.interceptors.request.use(config => {

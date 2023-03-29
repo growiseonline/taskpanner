@@ -57,7 +57,7 @@ export const ProjectsTaskToolbar = (props) => {
   const [dateTask, setDateTask] = React.useState('');
   const [plannedHour, setPlanerHour] = React.useState('');
   const [observationPlanner, setObservationPlanner]= React.useState('');
-
+  const [reworkCheck, setRework] = React.useState(false);
 
 
   useEffect(() =>{
@@ -82,7 +82,8 @@ export const ProjectsTaskToolbar = (props) => {
       plannerTeamID :user.id,
       executorTeamID : executor,
       notesFromPlanner : observationPlanner,
-      projectID : projectid
+      projectID : projectid,
+      isRework : reworkCheck
 
      }
      console.log(data)
@@ -99,7 +100,9 @@ export const ProjectsTaskToolbar = (props) => {
 
   }
 
-
+ const handleCheck = (event) => {
+    setRework(event.target.checked)
+ }
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -283,6 +286,20 @@ sx={{ minWidth:240, maxWidth:240}}>
                 value={observationPlanner}
                 onChange={e => setObservationPlanner(e.target.value)}
               />
+            </Grid>
+            <Grid
+              item
+              md={12}
+              xs={12}
+
+            >
+              <Typography
+                        color="textPrimary"
+                        variant="body1"
+                      >
+               Retrabalho
+              </Typography>
+              <Checkbox  onChange={handleCheck} />
             </Grid>
 
 

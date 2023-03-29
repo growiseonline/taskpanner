@@ -59,6 +59,7 @@ const MenuProps = {
     'Bloqueada' : '3',
     'Em Progresso' : '2',
     'Concluída' : '1',
+    'Cancelada' :'4'
 
 
   }
@@ -188,6 +189,9 @@ async function loadTasksRefresh(){
                   Observação do Executor
                 </TableCell>
                 <TableCell>
+                  Retrabalho
+                </TableCell>
+                <TableCell>
 
                 </TableCell>
               </TableRow>
@@ -249,6 +253,7 @@ async function loadTasksRefresh(){
                     color={(projetc.statusName === 'Concluída' && 'success')
                     || (projetc.statusName === 'Bloqueada' && 'error')
                     || (projetc.statusName === 'Não Iniciada' && 'info')
+                    || (projetc.statusName === 'Cancelada' && 'warning')
                     || 'warning'}
                   >
                     {(projetc.statusName)}
@@ -276,6 +281,14 @@ async function loadTasksRefresh(){
                         variant="body1"
                       >
                         {projetc.notesFromExecutor}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                    <Typography
+                        color="textPrimary"
+                        variant="body1"
+                      >
+                        {(projetc.isRework === true && 'SIM'|| projetc.isRework === false && 'NÃO')}
                       </Typography>
                     </TableCell>
                     <TableCell>
@@ -338,6 +351,8 @@ sx={{ minWidth:240, maxWidth:240}}>
           <MenuItem value={3}><SeverityPill color={'error'}>Bloqueada</SeverityPill></MenuItem>
           <MenuItem value={2}><SeverityPill color={'warning'}>Em progresso</SeverityPill></MenuItem>
           <MenuItem value={5}><SeverityPill color={'info'}>Não Iniciada</SeverityPill></MenuItem>
+          <MenuItem value={4}><SeverityPill color={'warning'}>Cancelada</SeverityPill></MenuItem>
+
 
 
         </Select>
