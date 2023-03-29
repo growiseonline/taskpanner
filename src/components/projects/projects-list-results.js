@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import PropTypes from "prop-types";
@@ -16,6 +15,8 @@ import Paper from "@mui/material/Paper";
 import { api } from "../../services/api";
 import AddTaskIcon from "@mui/icons-material/AddTask";
 import Pagination from "@mui/material/Pagination";
+import MenuItem from "@mui/material/MenuItem";
+import { SeverityPill } from "../severity-pill";
 
 import {
   Avatar,
@@ -35,6 +36,13 @@ import Link from "@mui/material/Link";
 import { getInitials } from "../../utils/get-initials";
 import { id } from "date-fns/locale";
 
+const statusResult = {
+  "Nao Iniciada": "5",
+  "Bloqueada": "3",
+  "Em Progresso": "2",
+  "Concluída": "1",
+};
+
 export const ProjectsListResults = ({ projects, ...rest }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
@@ -49,6 +57,7 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
     const response = await api.get(`/api/projects/v1?page=${page}&size=${limit}`);
     setProjects(response.data.projectList);
     setRecords(response.data.totalRecors);
+    console.log(response);
   };
   useEffect(() => {
     loadProjects();
@@ -65,7 +74,6 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
-
   return (
     <Card {...rest}>
       <PerfectScrollbar>
@@ -83,6 +91,7 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                 <TableCell>Inicio de Execução</TableCell>
                 <TableCell>Data de Vigência</TableCell>
                 <TableCell>Data de Enceramento</TableCell>
+                <TableCell>Status</TableCell>
                 <TableCell></TableCell>
               </TableRow>
             </TableHead>
@@ -137,7 +146,7 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                               value={(projetc.executedManHour * 100) / projetc.plannedManHour}
                             ></LinearProgress>
                           )}
-                          {projetc.executedManHour == projetc.plannedManHour  && (
+                          {projetc.executedManHour == projetc.plannedManHour && (
                             <LinearProgress
                               variant="determinate"
                               value={(projetc.executedManHour * 100) / projetc.plannedManHour}
@@ -151,17 +160,19 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                               color="error"
                             ></LinearProgress>
                           )}
-
-
                         </Box>
 
-                        { <Box sx={{ minWidth: 35 }}>
-                          <Typography variant="body2" color="text.secondary">{`${
-
-                            Math.round(
-                            (projetc.executedManHour * 100) / projetc.plannedManHour)
-                          }%`}</Typography>
-                        </Box> }
+                        {
+                          <Box sx={{ minWidth: 35 }}>
+                            <Typography variant="body2" color="text.secondary">
+                              {projetc.executedManHour == 0
+                                ? "0%"
+                                : `${Math.round(
+                                    (projetc.executedManHour * 100) / projetc.plannedManHour
+                                  )}%`}
+                            </Typography>
+                          </Box>
+                        }
                       </Box>
                     </TableCell>
                     <TableCell>
@@ -171,7 +182,7 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                     </TableCell>
                     <TableCell>
                       <Typography color="textPrimary" variant="body1">
-                      {format(Date.parse(projetc.startDate), "dd/MM/yyyy")}
+                        {format(Date.parse(projetc.startDate), "dd/MM/yyyy")}
                       </Typography>
                     </TableCell>
 
@@ -185,7 +196,25 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                         {format(Date.parse(projetc.endDate), "dd/MM/yyyy")}
                       </Typography>
                     </TableCell>
+                    <TableCell>
+                      <Typography color={(projetc.status === '1' && 'green')
+                    || (projetc.status === '3' && 'red')
+                    || (projetc.status === '5' && 'blue')
+                    || (projetc.status === '4' && 'orange')
+                    || (projetc.status === '2' && 'orange')
+                    || 'warning'} variant="body1">
+                        {
+                        (projetc.status === "5" && "Não Iniciada") ||
+                        (projetc.status === "3" && "Bloqueada") ||
+                        (projetc.status === "2" && "Em Progresso") ||
+                        (projetc.status === "1" && "Concluido") ||
+                        (projetc.status === "4" && "Cancelado")
 
+
+                        }
+
+                      </Typography>
+                    </TableCell>
                     <TableCell>
                       <Link href={`/projects/${projetc.projectID}`}>
                         <AddTaskIcon />
@@ -198,6 +227,7 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
           </Table>
         </Box>
       </PerfectScrollbar>
+
       <TablePagination
         component="div"
         count={totalRecords}
@@ -208,6 +238,7 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
         rowsPerPageOptions={[5, 10, 25]}
       />
     </Card>
+    
   );
 };
 

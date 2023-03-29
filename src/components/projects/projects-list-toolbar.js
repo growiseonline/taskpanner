@@ -66,7 +66,7 @@ export const ProjectsListToolbar = (props) => {
 
 
   async function handleSubmit() {
-    console.log(dateContract)
+    console.log(dateEnd)
     const data = {
       projectName: projectName,
       clientID: String(client),
