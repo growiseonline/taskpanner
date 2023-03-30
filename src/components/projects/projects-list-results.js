@@ -212,13 +212,15 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography color={(projetc.status === '1' && 'green')
-                    || (projetc.status === '3' && 'red')
-                    || (projetc.status === '5' && 'blue')
-                    || (projetc.status === '4' && 'orange')
-                    || (projetc.status === '2' && 'orange')
-                    || 'warning'} variant="body1">
-                        {
+                    <SeverityPill
+                    color={(projetc.status === "1" && 'success')
+                    || (projetc.status === "3" && 'error')
+                    || (projetc.status === "5" && 'info')
+                    || (projetc.status === "2" && 'warning')
+                    || (projetc.status === "4" && 'error')
+                    || 'warning'}
+                  >
+                    {
                         (projetc.status === "5" && "Não Iniciada") ||
                         (projetc.status === "3" && "Bloqueada") ||
                         (projetc.status === "2" && "Em Progresso") ||
@@ -227,8 +229,8 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
 
 
                         }
+                    </SeverityPill>
 
-                      </Typography>
                     </TableCell>
                     <TableCell>
                       <Link href={`/projects/${projetc.projectID}`}>
