@@ -15,10 +15,8 @@ import Paper from "@mui/material/Paper";
 import { api } from "../../services/api";
 import AddTaskIcon from "@mui/icons-material/AddTask";
 import Pagination from "@mui/material/Pagination";
-
 import MenuItem from "@mui/material/MenuItem";
 import { SeverityPill } from "../severity-pill";
-
 
 import {
   Avatar,
@@ -45,11 +43,10 @@ const statusResult = {
   "Concluída": "1",
 };
 
-
 export const ProjectsListResults = ({ projects, ...rest }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
-  const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
+  const [limit, setLimit] = useState(10);
   const [totalRecords, setRecords] = React.useState();
 
   const user = JSON.parse(localStorage.getItem("user-data"));
@@ -59,8 +56,11 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
   const loadProjects = async () => {
     const response = await api.get(`/api/projects/v1?page=${page}&size=${limit}`);
     setProjects(response.data.projectList);
-    setRecords(response.data.totalRecors);
-    console.log(response);
+     setRecords(response.data.totalRecors);
+     console.log(response.data.totalRecors)
+
+    // console.log(response.data.totalRecords)
+
   };
   useEffect(() => {
     loadProjects();
@@ -68,16 +68,13 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
 
   const handleLimitChange = (event) => {
     setLimit(event.target.value);
-
   };
 
   async function ChangePage() {
-
     const response = await api.get(`/api/projects/v1?page=${page}&size=${limit}`);
     setProjects(response.data);
   }
   const handlePageChange = (event, newPage) => {
-
     setPage(newPage);
   };
   return (
@@ -153,13 +150,14 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                               color="primary"
                             ></LinearProgress>
                           )}
-                          {(projetc.executedManHour == projetc.plannedManHour && projetc.executedManHour != 0) && (
-                            <LinearProgress
-                              variant="determinate"
-                              value={(projetc.executedManHour * 100) / projetc.plannedManHour}
-                              color="success"
-                            ></LinearProgress>
-                          )}
+                          {projetc.executedManHour == projetc.plannedManHour &&
+                            projetc.executedManHour != 0 && (
+                              <LinearProgress
+                                variant="determinate"
+                                value={(projetc.executedManHour * 100) / projetc.plannedManHour}
+                                color="success"
+                              ></LinearProgress>
+                            )}
                           {projetc.executedManHour > projetc.plannedManHour && (
                             <LinearProgress
                               variant="determinate"
@@ -174,7 +172,6 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                               color="primary"
                             ></LinearProgress>
                           )}
-
                         </Box>
 
                         {
@@ -183,8 +180,8 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                               {projetc.executedManHour == 0
                                 ? "0%"
                                 : `${Math.round(
-                                    (projetc.executedManHour * 100) / projetc.plannedManHour
-                                  )}%`}
+                                  (projetc.executedManHour * 100) / projetc.plannedManHour
+                                )}%`}
                             </Typography>
                           </Box>
                         }
@@ -212,26 +209,23 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                       </Typography>
                     </TableCell>
                     <TableCell>
-                    <SeverityPill
-                    color={(projetc.status === "1" && 'success')
-                    || (projetc.status === "3" && 'error')
-                    || (projetc.status === "5" && 'info')
-                    || (projetc.status === "2" && 'warning')
-                    || (projetc.status === "4" && 'error')
-                    || 'warning'}
-                  >
-                    {
-                        (projetc.status === "5" && "Não Iniciada") ||
-                        (projetc.status === "3" && "Bloqueada") ||
-                        (projetc.status === "2" && "Em Progresso") ||
-                        (projetc.status === "1" && "Concluido") ||
-                        (projetc.status === "6" && "Encerrado") ||
-                        (projetc.status === "4" && "Cancelado")
-
-
+                      <SeverityPill
+                        color={
+                          (projetc.status === "1" && "success") ||
+                          (projetc.status === "3" && "error") ||
+                          (projetc.status === "5" && "info") ||
+                          (projetc.status === "2" && "warning") ||
+                          (projetc.status === "4" && "error") ||
+                          "warning"
                         }
-                    </SeverityPill>
-
+                      >
+                        {(projetc.status === "5" && "Não Iniciada") ||
+                          (projetc.status === "3" && "Bloqueada") ||
+                          (projetc.status === "2" && "Em Progresso") ||
+                          (projetc.status === "1" && "Concluido") ||
+                          (projetc.status === "6" && "Encerrado") ||
+                          (projetc.status === "4" && "Cancelado")}
+                      </SeverityPill>
                     </TableCell>
                     <TableCell>
                       <Link href={`/projects/${projetc.projectID}`}>
@@ -256,7 +250,6 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
         rowsPerPageOptions={[5, 10, 25]}
       />
     </Card>
-
   );
 };
 

@@ -32,6 +32,7 @@ import { api } from "../../services/api";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { ProjectsListResults } from "./projects-list-results";
+import { style } from "@mui/system";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -52,14 +53,14 @@ export const ProjectsListToolbar = (props) => {
   const [client, setClient] = React.useState("");
   const [plannerManager, setPM] = React.useState("");
   const [expectedtime, setExpectedTime] = React.useState([]);
-  // const [plannerHour, setPlanerHour] = React.useState([]);
+  const [plannerHour, setPlanerHour] = React.useState([]);
   const [departmentName, setDepartmentName] = React.useState([]);
   const [departmentList, setDepartments] = React.useState([]);
   const [clientList, setClients] = React.useState([]);
   const [pmList, setPMs] = React.useState([]);
-  const [dateContract, setDateContract] = React.useState("");
-  const [dateStart, setDateStart] = React.useState("");
-  const [dateEnd, setEndDate] = React.useState("");
+  const [dateContract, setDateContract] = React.useState(null);
+  const [dateStart, setDateStart] = React.useState(null);
+  const [dateEnd, setEndDate] = React.useState(null);
   const [dateExecution, setDateExecution] = React.useState("");
   const [startOfExecution, setExceptionDate] = React.useState("");
 
@@ -70,12 +71,12 @@ export const ProjectsListToolbar = (props) => {
     const data = {
       projectName: projectName,
       clientID: String(client),
-      expectedManHor : expectedtime,
+      expectedManHor: expectedtime,
       dapartment: departmentName,
       internalCode: internalCode,
-      startDate: dateStart.getDate() + "-" + padTo2Digits(dateStart.getMonth()+1) + "-" + dateStart.getFullYear(),
-      endDate: dateEnd.getDate() + "-" + padTo2Digits(dateEnd.getMonth()+1 )+ "-" + dateEnd.getFullYear(),
-      contractEndDate: dateContract.getDate() + "-" + padTo2Digits(dateContract.getMonth() +1) + "-" + dateContract.getFullYear(),
+      startDate: dateStart.getDate() + "-" + padTo2Digits(dateStart.getMonth() + 1) + "-" + dateStart.getFullYear(),
+      endDate: dateEnd.getDate() + "-" + padTo2Digits(dateEnd.getMonth() + 1) + "-" + dateEnd.getFullYear(),
+      contractEndDate: dateContract.getDate() + "-" + padTo2Digits(dateContract.getMonth() + 1) + "-" + dateContract.getFullYear(),
       PMTeamID: String(plannerManager),
     };
     console.log(plannerManager);
@@ -84,7 +85,7 @@ export const ProjectsListToolbar = (props) => {
       return num.toString().padStart(2, '0');
     }
 
-    if (projectName !== ""  && internalCode !== "") {
+    if (projectName !== "" && internalCode !== "") {
 
       console.log(data);
       const response = await api.post("/api/projects/v1", data);
@@ -264,24 +265,31 @@ export const ProjectsListToolbar = (props) => {
                 />
               </Grid>
 
+
               <Grid item md={6} xs={12}>
                 <DesktopDatePicker
                   label="Data de Vigência"
                   inputFormat="dd/MM/yyyy"
+                  variant="bo"
                   value={dateContract}
                   onChange={handleChangeDateContract}
                   renderInput={(params) => <TextField {...params} />}
+
+
                 />
               </Grid>
+
               <Grid item md={6} xs={12}>
-                <DesktopDatePicker
+                <DesktopDatePicker style={{ border: "solid" }}
+
                   label="Data Início de Execução"
                   inputFormat="dd/MM/yyyy"
                   value={dateStart}
                   onChange={handleChangeDateStart}
-                  renderInput={(params) => <TextField {...params} />}
+                  renderInput={(params) => <TextField  {...params} />}
                 />
               </Grid>
+
               <Grid item md={6} xs={12}>
                 <DesktopDatePicker
                   label="Data de Encerramento"
