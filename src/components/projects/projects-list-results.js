@@ -225,6 +225,7 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                         (projetc.status === "3" && "Bloqueada") ||
                         (projetc.status === "2" && "Em Progresso") ||
                         (projetc.status === "1" && "Concluido") ||
+                        (projetc.status === "6" && "Encerrado") ||
                         (projetc.status === "4" && "Cancelado")
 
 
