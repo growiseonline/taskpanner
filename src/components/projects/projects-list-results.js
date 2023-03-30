@@ -15,8 +15,10 @@ import Paper from "@mui/material/Paper";
 import { api } from "../../services/api";
 import AddTaskIcon from "@mui/icons-material/AddTask";
 import Pagination from "@mui/material/Pagination";
+
 import MenuItem from "@mui/material/MenuItem";
 import { SeverityPill } from "../severity-pill";
+
 
 import {
   Avatar,
@@ -43,10 +45,11 @@ const statusResult = {
   "Concluída": "1",
 };
 
+
 export const ProjectsListResults = ({ projects, ...rest }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const [totalRecords, setRecords] = React.useState();
 
   const user = JSON.parse(localStorage.getItem("user-data"));
@@ -65,13 +68,16 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
 
   const handleLimitChange = (event) => {
     setLimit(event.target.value);
+
   };
 
   async function ChangePage() {
+
     const response = await api.get(`/api/projects/v1?page=${page}&size=${limit}`);
     setProjects(response.data);
   }
   const handlePageChange = (event, newPage) => {
+
     setPage(newPage);
   };
   return (
@@ -144,9 +150,10 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                             <LinearProgress
                               variant="determinate"
                               value={(projetc.executedManHour * 100) / projetc.plannedManHour}
+                              color="primary"
                             ></LinearProgress>
                           )}
-                          {projetc.executedManHour == projetc.plannedManHour && (
+                          {(projetc.executedManHour == projetc.plannedManHour && projetc.executedManHour != 0) && (
                             <LinearProgress
                               variant="determinate"
                               value={(projetc.executedManHour * 100) / projetc.plannedManHour}
@@ -160,6 +167,14 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
                               color="error"
                             ></LinearProgress>
                           )}
+                          {projetc.executedManHour == 0 && (
+                            <LinearProgress
+                              variant="determinate"
+                              value={0}
+                              color="primary"
+                            ></LinearProgress>
+                          )}
+
                         </Box>
 
                         {
@@ -238,7 +253,7 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
         rowsPerPageOptions={[5, 10, 25]}
       />
     </Card>
-    
+
   );
 };
 
