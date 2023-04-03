@@ -22,6 +22,9 @@ import AddTaskIcon from '@mui/icons-material/AddTask';
 import { SeverityPill } from '../severity-pill';
 import ManageHistoryIcon from '@mui/icons-material/ManageHistory';
 import { useAuthContext } from '../../contexts/auth-context';
+
+
+
 import {
   Avatar,
   Box,
@@ -68,10 +71,12 @@ export const ProjectsListActivePlanResults = ({ projects, ...rest }) => {
   const router = useRouter()
   console.log(router)
   const  projectid  = router.query.id
+  const [count, setCount] = useState(0);
+
 
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
-  const [limit, setLimit] = useState(10);
-  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(5);
+  const [page, setPage] = useState(0);
   const [open, setOpen] = React.useState(false);
   const [taskList, setTasks] = React.useState([]);
   const [newExecutedHour, setExecute] = React.useState();
@@ -84,7 +89,7 @@ export const ProjectsListActivePlanResults = ({ projects, ...rest }) => {
   async function loadTasks(){
     const response = await api.get(`/api/ActivityPlan/v1/TasksByProject?projectId=${projectid}&page=${page}&size=${limit}&searchExecutor=`);
     setTasks(response.data.activitList)
-    setRecords(response.data.totalRecords)
+    setRecords(response.data.totalRecors)
   }
   useEffect(() =>{
   loadTasks();
@@ -140,7 +145,7 @@ async function loadTasksRefresh(){
     setLimit(event.target.value);
   };
   const handlePageChange = (event, newPage) => {
-    setPage(newPage);
+    setPage(newPage  );
   };
   async function  handleClickOpen(activityid) {
     console.log(id)

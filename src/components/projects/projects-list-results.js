@@ -18,6 +18,8 @@ import Pagination from "@mui/material/Pagination";
 import MenuItem from "@mui/material/MenuItem";
 import { SeverityPill } from "../severity-pill";
 
+
+
 import {
   Avatar,
   Box,
@@ -45,37 +47,38 @@ const statusResult = {
 
 export const ProjectsListResults = ({ projects, ...rest }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
-  const [page, setPage] = useState(0);
-  const [limit, setLimit] = useState(10);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(5);
   const [totalRecords, setRecords] = React.useState();
-
   const user = JSON.parse(localStorage.getItem("user-data"));
-  console.log(user.permissionId);
+  console.log(page);
   const [projectList, setProjects] = useState([]);
-
   const loadProjects = async () => {
-    const response = await api.get(`/api/projects/v1?page=${page}&size=${limit}`);
+   const response = await api.get(`/api/projects/v1?page=${page}&size=${limit}`);
     setProjects(response.data.projectList);
      setRecords(response.data.totalRecors);
-     console.log(response.data.totalRecors)
-
-    // console.log(response.data.totalRecords)
-
   };
   useEffect(() => {
     loadProjects();
   }, [page]);
 
+
+
+
   const handleLimitChange = (event) => {
     setLimit(event.target.value);
   };
 
+
   async function ChangePage() {
     const response = await api.get(`/api/projects/v1?page=${page}&size=${limit}`);
     setProjects(response.data);
+
   }
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
+
+
   };
   return (
     <Card {...rest}>
@@ -239,16 +242,16 @@ export const ProjectsListResults = ({ projects, ...rest }) => {
           </Table>
         </Box>
       </PerfectScrollbar>
-
       <TablePagination
         component="div"
         count={totalRecords}
-        onPageChange={handlePageChange}
+        onPageChange={handlePageChange }
         onRowsPerPageChange={handleLimitChange}
         page={page}
         rowsPerPage={limit}
         rowsPerPageOptions={[5, 10, 25]}
       />
+
     </Card>
   );
 };
